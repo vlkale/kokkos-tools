@@ -202,12 +202,11 @@ void kokkosp_finalize_library() {
 
 void kokkosp_begin_parallel_for(const char* name, const uint32_t devID,
                                 uint64_t* kID) {
-  *kID = ++uniqID;
+  *kID = uniqID++;
   static uint64_t invocationNum = 0;
   ++invocationNum;
   if ((invocationNum % kernelSampleSkip) == 0) {
-    pair<uint64_t, uint32_t> infoOfSample;
-    
+    std::pair<uint64_t, uint32_t> infoOfSample;
     if (tool_verbosity > 0) {
       printf("KokkosP: sample %llu calling child-begin function...\n",
              (unsigned long long)(*kID));
@@ -227,22 +226,23 @@ void kokkosp_begin_parallel_for(const char* name, const uint32_t devID,
   }
 }
 
-void kokkosp_end_parallel_for(const uint64_t kID) {
-  std::pair<uint64_t, uint32_t> infoOfMatchedSample;
-  if ((kID % kernelSampleSkip) == 0) {
-    if (tool_verbosity > 0) {
-      printf("KokkosP: sample %llu calling child-end function...\n",
-             (unsigned long long)(kID));
-    }
-    infoOfMatchedSample = infokIDSample.at(kID);
-    get_global_fence_choice();  // re-read environment variable to get most
+void kokkosp_end_parallel_for(const uint64_t kID) { 
+  if (NULL != endForCallee) {
+      std::pair<uint64_t, uint32_t> infoOfMatchedSample;
+      if (!(infokIDSample.find(kID) == infokIDSample.end())) {
+      infoOfMatchedSample = infokIDSample[kID]; 
+      uint64_t retrievedNestedkID = infoOfMatchedSample.first;
+          get_global_fence_choice();  // re-read environment variable to get most
                                 // accurate value
     if (tool_globFence) {
       invoke_ktools_fence(
           infoOfMatchedSample.second);  // invoke tool-induced fence from device ID
-    }
-    if (NULL != endForCallee) {
-      uint64_t retrievedNestedkID = infoOfMatchedSample.first;
+    } 
+      
+      if (tool_verbosity > 0) {
+        printf("KokkosP: sample %llu calling child-end function...\n",
+               (unsigned long long)(kID));
+      }
       (*endForCallee)(retrievedNestedkID);
     }
   }
@@ -250,12 +250,12 @@ void kokkosp_end_parallel_for(const uint64_t kID) {
 
 void kokkosp_begin_parallel_scan(const char* name, const uint32_t devID,
                                  uint64_t* kID) {
-   *kID = ++uniqID;
+  
+  *kID = uniqID++;
   static uint64_t invocationNum = 0;
   ++invocationNum;
   if ((invocationNum % kernelSampleSkip) == 0) {
-    pair<uint64_t, uint32_t> infoOfSample;
-    
+    std::pair<uint64_t, uint32_t> infoOfSample;
     if (tool_verbosity > 0) {
       printf("KokkosP: sample %llu calling child-begin function...\n",
              (unsigned long long)(*kID));
@@ -268,42 +268,43 @@ void kokkosp_begin_parallel_scan(const char* name, const uint32_t devID,
     }
     if (NULL != beginScanCallee) {
       uint64_t nestedkID = 0;
-      (*beginForCallee)(name, devID, &nestedkID);
+      (*beginScanCallee)(name, devID, &nestedkID);
       infoOfSample.first = nestedkID;
       infokIDSample.insert({*kID, infoOfSample});
     }
   }
+
 }
 
 void kokkosp_end_parallel_scan(const uint64_t kID) {
-  std::pair<uint64_t, uint32_t> infoOfMatchedSample;
-  if ((kID % kernelSampleSkip) == 0) {
-    if (tool_verbosity > 0) {
-      printf("KokkosP: sample %llu calling child-end function...\n",
-             (unsigned long long)(kID));
-    }
-    infoOfMatchedSample = infokIDSample.at(kID);
-    get_global_fence_choice();  // re-read environment variable to get most
+    if (NULL != endScanCallee) {
+      std::pair<uint64_t, uint32_t> infoOfMatchedSample;
+      if (!(infokIDSample.find(kID) == infokIDSample.end())) {
+      infoOfMatchedSample = infokIDSample[kID]; 
+      uint64_t retrievedNestedkID = infoOfMatchedSample.first;
+          get_global_fence_choice();  // re-read environment variable to get most
                                 // accurate value
     if (tool_globFence) {
       invoke_ktools_fence(
           infoOfMatchedSample.second);  // invoke tool-induced fence from device ID
-    }
-    if (NULL != endScanCallee) {
-      uint64_t retrievedNestedkID = infoOfMatchedSample.first;
-      (*endForCallee)(retrievedNestedkID);
+    } 
+      
+      if (tool_verbosity > 0) {
+        printf("KokkosP: sample %llu calling child-end function...\n",
+               (unsigned long long)(kID));
+      }
+      (*endScanCallee)(retrievedNestedkID);
     }
   }
 }
 
 void kokkosp_begin_parallel_reduce(const char* name, const uint32_t devID,
-                                   uint64_t* kID) {
-  *kID = ++uniqID;
+                                   uint64_t* kID) { 
+  *kID = uniqID++;
   static uint64_t invocationNum = 0;
   ++invocationNum;
   if ((invocationNum % kernelSampleSkip) == 0) {
-    pair<uint64_t, uint32_t> infoOfSample;
-    
+    std::pair<uint64_t, uint32_t> infoOfSample;
     if (tool_verbosity > 0) {
       printf("KokkosP: sample %llu calling child-begin function...\n",
              (unsigned long long)(*kID));
@@ -316,22 +317,30 @@ void kokkosp_begin_parallel_reduce(const char* name, const uint32_t devID,
     }
     if (NULL != beginReduceCallee) {
       uint64_t nestedkID = 0;
-      (*beginForCallee)(name, devID, &nestedkID);
+      (*beginReduceCallee)(name, devID, &nestedkID);
       infoOfSample.first = nestedkID;
       infokIDSample.insert({*kID, infoOfSample});
     }
   }
 }
-
+  
 void kokkosp_end_parallel_reduce(const uint64_t kID) {
-  if ((kID % kernelSampleSkip) == 0) {
-    if (tool_verbosity > 0) {
-      printf("KokkosP: sample %llu calling child-end function...\n",
-             (unsigned long long)(kID));
-    }
-
     if (NULL != endReduceCallee) {
-      uint64_t retrievedNestedkID = infokIDSample.at(kID);
+      std::pair<uint64_t, uint32_t> infoOfMatchedSample;
+      if (!(infokIDSample.find(kID) == infokIDSample.end())) {
+      infoOfMatchedSample = infokIDSample[kID]; 
+      uint64_t retrievedNestedkID = infoOfMatchedSample.first;
+          get_global_fence_choice();  // re-read environment variable to get most
+                                // accurate value
+    if (tool_globFence) {
+      invoke_ktools_fence(
+          infoOfMatchedSample.second);  // invoke tool-induced fence from device ID
+    } 
+      
+      if (tool_verbosity > 0) {
+        printf("KokkosP: sample %llu calling child-end function...\n",
+               (unsigned long long)(kID));
+      }
       (*endReduceCallee)(retrievedNestedkID);
     }
   }
