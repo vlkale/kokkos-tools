@@ -8,6 +8,7 @@
 #include "kp_config.hpp"
 #include <ctime>
 #include <limits>
+#include <iostream>
 
 namespace KokkosTools {
 namespace Sampler {
@@ -187,14 +188,23 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
 
   uniqID = 1;
 
-  const char* tool_sample = getenv("KOKKOS_TOOLS_SAMPLER_SKIP");
-  if (NULL != tool_sample) {
-    kernelSampleSkip = atoi(tool_sample) + 1;
+  if (0 > tool_seed) {
+    srand(time(NULL));
+    if (tool_verbosity > 0) {
+      printf(
+          "KokkosP: Seeding random number generator using clock for "
+          "random sampling.\n");
+    }
+  } else {
+    srand(tool_seed);
+    if (tool_verbosity > 0) {
+      printf(
+          "KokkosP: Seeding random number generator using seed %u for "
+          "random sampling.\n",
+          tool_seed);
+    }
   }
 
-  if (tool_verbosity > 0) {
-    printf("KokkosP: Sampling rate set to: %s\n", tool_sample);
-  }
   const char* tool_probability = getenv("KOKKOS_TOOLS_SAMPLER_PROB");
 
   if (NULL != tool_probability) {
@@ -219,15 +229,30 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
           "a Kokkos kernel will be profiled.\n");
       tool_prob_num = 0.0;
     }
+    if (tool_verbosity > 0) {
+      printf("KokkosP: Probability for the sampler set to: %f\n", tool_prob_num);
+    }  
+    kernelSampleSkip = 1;
+    return;
   }
-  if ((tool_prob_num < 0.0) &&
-      (kernelSampleSkip == std::numeric_limits<uint64_t>::max())) {
+
+  const char* tool_sample = getenv("KOKKOS_TOOLS_SAMPLER_SKIP");
+  if (NULL != tool_sample) {
+    tool_prob_num = 100.0;
+    kernelSampleSkip = atoi(tool_sample) + 1;
+    if (tool_verbosity > 0) {
+      printf("KokkosP: Sampling rate set to: %s\n", tool_sample);
+    }
+    return;
+  }
+
     if (tool_verbosity > 0) {
       printf(
           "KokkosP: Neither the probability "
           "nor the skip rate for sampling were set...\n");
     }
     tool_prob_num = 10.0;
+    kernelSampleSkip = 1;
     if (tool_verbosity > 0) {
       printf(
           "KokkosP: The probability "
@@ -236,52 +261,7 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
           "will not be used.\n",
           tool_prob_num);
     }
-  }
-
-  if (tool_verbosity > 0) {
-    if (tool_verbosity > 1) {
-      printf("KokkosP: Sampling skip rate provided as input is: %s\n",
-             tool_sample);
-      printf("KokkosP: Sampling probability provided as input is: %s\n",
-             tool_probability);
-    }
-    printf("KokkosP: Sampling skip rate is set to: %llu\n",
-           (unsigned long long)(kernelSampleSkip));
-    printf("KokkosP: Sampling probability is set to %f\n", tool_prob_num);
-  }
-
-  if (0 > tool_seed) {
-    srand(time(NULL));
-    if (tool_verbosity > 0) {
-      printf(
-          "KokkosP: Seeding random number generator using clock for "
-          "random sampling.\n");
-    }
-  } else {
-    srand(tool_seed);
-    if (tool_verbosity > 0) {
-      printf(
-          "KokkosP: Seeding random number generator using seed %u for "
-          "random sampling.\n",
-          tool_seed);
-    }
-  }
-
-  if ((NULL != tool_probability) && (NULL != tool_sample)) {
-    printf(
-        "KokkosP: You set both the probability and skip rate for the sampler. "
-        "Only random sampling "
-        "will be done, using the probabability you set; "
-        "The skip rate you set will be ignored.\n");
-
-    if (tool_verbosity > 1) {
-      printf(
-          "KokkosP: Note: The skip rate will be set to 1. Sampling will not be "
-          "based "
-          " on a pre-defined periodicity.\n");
-    }
     kernelSampleSkip = 1;
-  }
 }
 
 void kokkosp_finalize_library() {
@@ -294,7 +274,7 @@ void kokkosp_begin_parallel_for(const char* name, const uint32_t devID,
   static uint64_t invocationNum = 0;
   ++invocationNum;
   if ((invocationNum % kernelSampleSkip) == 0) {
-    if ((rand() / (1.0 * RAND_MAX)) < (tool_prob_num / 100.0)) {
+  if ((rand() / (1.0 * RAND_MAX)) < (tool_prob_num / 100.0)) {
       if (tool_verbosity > 0) {
         printf("KokkosP: sample %llu calling child-begin function...\n",
                (unsigned long long)(*kID));
@@ -316,8 +296,8 @@ void kokkosp_begin_parallel_for(const char* name, const uint32_t devID,
 }
 
 void kokkosp_end_parallel_for(const uint64_t kID) {
-  if (NULL != endForCallee) {
-    if (!(infokIDSample.find(kID) == infokIDSample.end())) {
+if (NULL != endForCallee) {
+ if (!(infokIDSample.find(kID) == infokIDSample.end())) {
       uint64_t retrievedNestedkID = infokIDSample[kID];
       if (tool_verbosity > 0) {
         printf("KokkosP: sample %llu calling child-end function...\n",

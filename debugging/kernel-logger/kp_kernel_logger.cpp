@@ -76,7 +76,6 @@ extern "C" void kokkosp_begin_parallel_for(const char* name,
 }
 
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
-  std::abort();
   std::cout << "KokkosP: Execution of kernel " << kID << " is completed.\n";
 }
 
