@@ -34,8 +34,6 @@ function(kp_add_executable_and_test)
             kokkostools test_common
     )
 
-    MESSAGE(STATUS "TARGET_NAME: ${kaeat_args_TARGET_NAME}, KOKKOS_TOOLS_LIBS: ${kaeat_args_KOKKOS_TOOLS_LIBS}")
-
     add_test(
         NAME ${kaeat_args_TARGET_NAME}
         COMMAND $<TARGET_FILE:${kaeat_args_TARGET_NAME}>
@@ -44,8 +42,9 @@ function(kp_add_executable_and_test)
     if(DEFINED kaeat_args_KOKKOS_TOOLS_LIBS)
         set(TOOL_LIBS_FILES)
         foreach(TOOL_LIB ${kaeat_args_KOKKOS_TOOLS_LIBS})
-          set(TOOL_LIBS_FILES "${TOOL_LIBS_FILES}\;$<TARGET_FILE:${TOOL_LIB}>")
+          list(APPEND TOOL_LIBS_FILES "$<TARGET_FILE:${TOOL_LIB}>")
         endforeach()
+        string(REPLACE ";" "\;" TOOL_LIBS_FILES "${TOOL_LIBS_FILES}")
 
         set_property(
             TEST ${kaeat_args_TARGET_NAME}
