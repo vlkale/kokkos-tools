@@ -54,20 +54,19 @@ uint32_t getDeviceID(uint32_t devid_in) {
 void invoke_ktools_fence(uint32_t devID) {
   if (tpi_funcs.fence != nullptr) {
     if (tool_verbosity > 1) {
-      std::cout << "KokkosP: Sampler attempting to invoke"
-                   " tool-induced fence on device "
+      std::cout << "KokkosP: Sampler attempting to invoke tool-induced fence "
+                   "on device "
                 << getDeviceID(devID) << '\n';
     }
     (*(tpi_funcs.fence))(devID);
     if (tool_verbosity > 1) {
-      std::cout << "KokkosP: Sampler sucessfully invoked"
-                   " tool-induced fence on device "
+      std::cout << "KokkosP: Sampler sucessfully invoked tool-induced fence on "
+                   "device "
                 << getDeviceID(devID) << '\n';
     }
   } else {
-    std::cout
-        << "KokkosP: FATAL: Kokkos Tools Programming Interface's tool-invoked "
-           "Fence is NULL!\n";
+    std::cout << "KokkosP: FATAL: Kokkos Tools Programming Interface's "
+                 "tool-invoked Fence is NULL!\n";
   }
 }
 
@@ -76,8 +75,7 @@ void kokkosp_provide_tool_programming_interface(
   if (!num_funcs) {
     if (tool_verbosity > 0)
       std::cout << "KokkosP: Note: Number of functions in Tools Programming "
-                   "Interface "
-                   "is 0!\n";
+                   "Interface is 0!\n";
   }
   tpi_funcs = funcsFromTPI;
 }
@@ -103,9 +101,8 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
 
   char* profileLibrary = getenv("KOKKOS_TOOLS_LIBS");
   if (NULL == profileLibrary) {
-    std::cout
-        << "Checking KOKKOS_PROFILE_LIBRARY. WARNING: This is a deprecated "
-           "variable. Please use KOKKOS_TOOLS_LIBS\n";
+    std::cout << "Checking KOKKOS_PROFILE_LIBRARY. WARNING: This is a "
+                 "deprecated variable. Please use KOKKOS_TOOLS_LIBS\n";
     profileLibrary = getenv("KOKKOS_PROFILE_LIBRARY");
     if (NULL == profileLibrary) {
       std::cout << "KokkosP: No library to call in " << profileLibrary << '\n';
@@ -197,9 +194,7 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
     srand(tool_seed);
     if (tool_verbosity > 0) {
       std::cout << "KokkosP: Seeding random number generator using seed "
-                << tool_seed
-                << " for "
-                   "random sampling.\n";
+                << tool_seed << " for random sampling.\n";
     }
   }
 
@@ -212,20 +207,15 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
     tool_prob_num = atof(tool_probability);
     if (tool_prob_num > 100.0) {
       std::cout << "KokkosP: The sampling probability value is set to be "
-                   "greater than "
-                   "100.0. "
-                   "The probability for the sampler will be set to 100 "
-                   "percent; all of "
-                   "the "
-                   "invocations of a Kokkos kernel will be profiled.\n";
+                   "greater than 100.0. The probability for the sampler will "
+                   "be set to 100 percent; all of the invocations of a Kokkos "
+                   "kernel will be profiled.\n";
       tool_prob_num = 100.0;
     } else if (tool_prob_num < 0.0) {
       std::cout
           << "KokkosP: The sampling probability value is set to be a negative "
-             "number. The "
-             "sampler's probability will be set to 0 percent; none of the "
-             "invocations of "
-             "a Kokkos kernel will be profiled.\n";
+             "number. The sampler's probability will be set to 0 percent; none "
+             "of the invocations of a Kokkos kernel will be profiled.\n";
       tool_prob_num = 0.0;
     }
     if (tool_verbosity > 0) {
@@ -247,18 +237,16 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
   }
 
   if (tool_verbosity > 0) {
-    std::cout << "KokkosP: Neither the probability "
-                 "nor the skip rate for sampling were set...\n";
+    std::cout << "KokkosP: Neither the probability nor the skip rate for "
+                 "sampling were set...\n";
   }
   tool_prob_num    = 10.0;
   kernelSampleSkip = 1;
   if (tool_verbosity > 0) {
-    std::cout << "KokkosP: The probability "
-                 "for the sampler is set to the default of "
-              << tool_prob_num
-              << " percent. The skip rate "
-                 "for sampler"
-                 "will not be used.\n";
+    std::cout
+        << "KokkosP: The probability for the sampler is set to the default of "
+        << tool_prob_num
+        << " percent. The skip rate for sampler will not be used.\n";
   }
   kernelSampleSkip = 1;
 }
