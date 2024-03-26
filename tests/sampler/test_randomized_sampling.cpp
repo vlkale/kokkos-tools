@@ -25,8 +25,14 @@ struct Tester {
 };
 
 static const std::vector<std::string> matchers{
-    "(.*)KokkosP: Execution of kernel 0 is completed(.*)",
-    "(.*)KokkosP: Execution of kernel 1 is completed(.*)"};
+"(.*)KokkosP: sample 51 calling child-begin function...(.*)",
+"(.*)KokkosP: sample 51 finished with child-begin function.(.*)",
+"(.*)KokkosP: sample 51 calling child-end function...(.*)",
+"(.*)KokkosP: sample 51 calling child-end function.(.*)",
+"(.*)KokkosP: sample 102 calling child-begin function...(.*)",
+"(.*)KokkosP: sample 102 finished with child-begin function.(.*)",
+"(.*)KokkosP: sample 102 calling child-end function...(.*)",
+"(.*)KokkosP: sample 102 calling child-end function.(.*)"};
 
 /**
  * @test This test checks that the tool effectively samples.
