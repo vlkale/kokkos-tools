@@ -11,7 +11,7 @@
 #   KOKKOS_TOOLS_GLOBALFENCES : test environment receives the variable 'KOKKOS_TOOLS_GLOBALFENCES' that is set as the value of 1 to turn the tool's auto-fencing on. 
 
 function(kp_add_executable_and_test)
-	cmake_parse_arguments(kaeat_args "" "TARGET_NAME;SOURCE_FILE;KOKKOS_TOOLS_LIBS;KOKKOS_TOOLS_LIBS2;KOKKOS_TOOLS_SAMPLER_VERBOSE;KOKKOS_TOOLS_GLOBALFENCES;KOKKOS_TOOLS_SAMPLER_SKIP" "" ${ARGN})
+    cmake_parse_arguments(kaeat_args "" "TARGET_NAME;SOURCE_FILE;KOKKOS_TOOLS_SAMPLER_VERBOSE;KOKKOS_TOOLS_GLOBALFENCES;KOKKOS_TOOLS_SAMPLER_SKIP" "KOKKOS_TOOLS_LIBS" ${ARGN})
 
     if(NOT DEFINED kaeat_args_TARGET_NAME)
         message(FATAL_ERROR "'TARGET_NAME' is a required argument.")
@@ -40,48 +40,43 @@ function(kp_add_executable_and_test)
     )
 
     if(DEFINED kaeat_args_KOKKOS_TOOLS_LIBS)
-     if(DEFINED kaeat_args_KOKKOS_TOOLS_LIBS2)
+        set(TOOL_LIBS_FILES)
+        foreach(TOOL_LIB ${kaeat_args_KOKKOS_TOOLS_LIBS})
+          list(APPEND TOOL_LIBS_FILES "$<TARGET_FILE:${TOOL_LIB}>")
+        endforeach()
+        string(REPLACE ";" "\;" TOOL_LIBS_FILES "${TOOL_LIBS_FILES}")
+
         set_property(
             TEST ${kaeat_args_TARGET_NAME}
-            APPEND
-            PROPERTY
-	    ENVIRONMENT "KOKKOS_TOOLS_LIBS=$<TARGET_FILE:${kaeat_args_KOKKOS_TOOLS_LIBS}>\;$<TARGET_FILE:${kaeat_args_KOKKOS_TOOLS_LIBS2}>"
+            APPEND PROPERTY ENVIRONMENT "KOKKOS_TOOLS_LIBS=${TOOL_LIBS_FILES}"
         )
-      else() 
-        set_property(
-		TEST ${kaeat_args_TARGET_NAME}
-	        APPEND
-		PROPERTY
-               ENVIRONMENT "KOKKOS_TOOLS_LIBS=$<TARGET_FILE:${kaeat_args_KOKKOS_TOOLS_LIBS}>;"        
-	)
-     endif()
     endif()
     
     if(DEFINED kaeat_args_KOKKOS_TOOLS_SAMPLER_VERBOSE)
-	 set_property(
-		TEST ${kaeat_args_TARGET_NAME}
-		APPEND
-		PROPERTY
-		ENVIRONMENT "KOKKOS_TOOLS_SAMPLER_VERBOSE=${kaeat_args_KOKKOS_TOOLS_SAMPLER_VERBOSE}"
-	       )
+     set_property(
+        TEST ${kaeat_args_TARGET_NAME}
+        APPEND
+        PROPERTY
+        ENVIRONMENT "KOKKOS_TOOLS_SAMPLER_VERBOSE=${kaeat_args_KOKKOS_TOOLS_SAMPLER_VERBOSE}"
+           )
      endif()
 
      if(DEFINED kaeat_args_KOKKOS_TOOLS_GLOBALFENCES)
         set_property(
-		TEST ${kaeat_args_TARGET_NAME}
-		APPEND
-		PROPERTY
-		ENVIRONMENT "KOKKOS_TOOLS_GLOBALFENCES=${kaeat_args_KOKKOS_TOOLS_GLOBALFENCES}"
+        TEST ${kaeat_args_TARGET_NAME}
+        APPEND
+        PROPERTY
+        ENVIRONMENT "KOKKOS_TOOLS_GLOBALFENCES=${kaeat_args_KOKKOS_TOOLS_GLOBALFENCES}"
                )
       endif()
      
      if (DEFINED kaeat_args_KOKKOS_TOOLS_SAMPLER_SKIP)
-	     set_property(
-		     TEST ${kaeat_args_TARGET_NAME}
-		     APPEND 
-		     PROPERTY
-		     ENVIRONMENT "KOKKOS_TOOLS_SAMPLER_SKIP=${kaeat_args_KOKKOS_TOOLS_SAMPLER_SKIP}"
-	     )
+         set_property(
+             TEST ${kaeat_args_TARGET_NAME}
+             APPEND 
+             PROPERTY
+             ENVIRONMENT "KOKKOS_TOOLS_SAMPLER_SKIP=${kaeat_args_KOKKOS_TOOLS_SAMPLER_SKIP}"
+         )
 
      endif()
 

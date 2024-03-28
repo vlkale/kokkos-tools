@@ -10,8 +10,8 @@ struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
     //! Explicitly launch a kernel with a name, and run it 150 times with kernel
-    //! logger. Use a periodic sampling with skip rate 101. This should print
-    //! out 1 invocation, and there is a single matcher with a regular
+    //! logger. Use a periodic sampling with skip rate 51. This should print
+    //! out 2 invocation, and there is a single matcher with a regular
     //! expression to check this.
 
     for (int iter = 0; iter < 150; iter++) {
@@ -25,7 +25,14 @@ struct Tester {
 };
 
 static const std::vector<std::string> matchers{
-    "(.*) KokkosP: Execution of kernel 101 is completed (.*)"};
+    "(.*)KokkosP: sample 51 calling child-begin function...(.*)",
+    "(.*)KokkosP: sample 51 finished with child-begin function.(.*)",
+    "(.*)KokkosP: sample 51 calling child-end function...(.*)",
+    "(.*)KokkosP: sample 51 calling child-end function.(.*)",
+    "(.*)KokkosP: sample 102 calling child-begin function...(.*)",
+    "(.*)KokkosP: sample 102 finished with child-begin function.(.*)",
+    "(.*)KokkosP: sample 102 calling child-end function...(.*)",
+    "(.*)KokkosP: sample 102 calling child-end function.(.*)"};
 
 /**
  * @test This test checks that the tool effectively samples.
