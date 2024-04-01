@@ -71,7 +71,7 @@ void kokkosp_provide_tool_programming_interface(
           "KokkosP: Note: Number of functions in Tools Programming Interface "
           "is 0!\n");
   }
-  tpi_funcs = *funcsFromTPI;
+  tpi_funcs = funcsFromTPI;
 }
 
 void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
