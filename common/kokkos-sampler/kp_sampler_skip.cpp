@@ -6,6 +6,7 @@
 #include <dlfcn.h>
 #include "../../profiling/all/kp_core.hpp"
 #include "kp_config.hpp"
+#include <iostream>
 
 namespace KokkosTools {
 namespace Sampler {
