@@ -21,16 +21,16 @@ struct Tester {
 
   for (int iter = 0; iter < 150; iter++) { 
       result = 0;
-      Kokkos::parallel_scan("Loop1", N,
-      KOKKOS_LAMBDA(int64_t i, int64_t& partial_sum, bool is_final) {
-      if(is_final) pre(i) = partial_sum;
-      partial_sum += i;
-      if(is_final) post(i) = partial_sum;
-    }, result);
+      Kokkos::parallel_scan("named kernel scan",
+                           Kokkos::RangePolicy<execution_space>(space, 0, N),
+                           *this, result);
   } // end timestepping loop
  } // end explicit Tester 
 
-KOKKOS_FUNCTION void operator()(const int i, const int psum, bool isFinal) const {}
+KOKKOS_FUNCTION void operator()(const int i, const int& psum, bool isFinal) const {}
+ //if(isFinal) pre(i) = p_sum;
+   // p_sum += i;
+    //  if(isFinal) post(i) = p_sum;
 };
 
 static const std::vector<std::string> matchers {
