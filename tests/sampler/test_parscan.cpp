@@ -14,15 +14,15 @@ struct Tester {
     //! out 2 invocations, and there is a single matcher with a regular
     //! expression to check this.
     
-    int N = 100;
+    int N = 1024;
     int64_t result;
     // Kokkos::View<int64_t*> post("postfix_sum", N);
    // Kokkos::View<int64_t*> pre("prefix_sum", N);
 
   for (int iter = 0; iter < 150; iter++) { 
       result = 0;
-      Kokkos::parallel_scan("named kernel scan",
-                           Kokkos::RangePolicy<execution_space>(space, 0, 1),
+      Kokkos::parallel_scan("named kernel scan", N,
+                           //Kokkos::RangePolicy<execution_space>(space, 0, N),
                            *this, result);
   } // end timestepping loop
  } // end explicit Tester 
