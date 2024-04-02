@@ -15,17 +15,16 @@ struct Tester {
     //! expression to check this.
 
     double sum;
-for (int iter = 0; iter < 150; iter++) {
-     sum = 0;
+    for (int iter = 0; iter < 150; iter++) {
+      sum = 0;
       Kokkos::parallel_reduce("named kernel",
-                           Kokkos::RangePolicy<execution_space>(space, 0, 1),
-                           *this, sum);
+                              Kokkos::RangePolicy<execution_space>(space, 0, 1),
+                              *this, sum);
     }
   }
 
   KOKKOS_FUNCTION void operator()(const int, const int) const {}
 };
-
 
 static const std::vector<std::string> matchers{
     "(.*)KokkosP: sample 51 calling child-begin function...(.*)",
