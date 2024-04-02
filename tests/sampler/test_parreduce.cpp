@@ -15,10 +15,10 @@ struct Tester {
     //! expression to check this.
     const size_t N = 1024;
     View<double*> x ("x", N); 
-for(int i = 0; i < N; i++)
+    for(int i = 0; i < N; i++)
       { 
-        x[i] = i;
-      } 
+        x(i) = i;
+      }
   for (int iter = 0; iter < 150; iter++) { 
    double sum = 0.0;
     // KOKKOS_LAMBDA macro includes capture-by-value specifier [=].
