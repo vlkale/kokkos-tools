@@ -14,7 +14,7 @@ struct Tester {
     //! out 2 invocations, and there is a single matcher with a regular
     //! expression to check this.
     const size_t N = 1024;
-    View<double*> x ("x", N); 
+    Kokkos::View<double*> x ("x", N); 
     for(int i = 0; i < N; i++)
       { 
         x(i) = i;
@@ -22,7 +22,7 @@ struct Tester {
   for (int iter = 0; iter < 150; iter++) { 
    double sum = 0.0;
     // KOKKOS_LAMBDA macro includes capture-by-value specifier [=].
-    Kokkos::parallel_reduce("named kernel Reduction", N, KOKKOS_LAMBDA (const int i, double& update) {
+    Kokkos::parallel_reduce("named kernel reduction", N, KOKKOS_LAMBDA (const int i, double& update) {
     update += x(i); }, sum);
     }
   }
