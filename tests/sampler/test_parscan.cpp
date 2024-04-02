@@ -30,7 +30,7 @@ struct Tester {
   } // end timestepping loop
  } // end explicit Tester 
 
-KOKKOS_FUNCTION void operator()(const int) const {}
+KOKKOS_FUNCTION void operator()(const int i, const int psum, bool isFinal) const {}
 };
 
 static const std::vector<std::string> matchers {
