@@ -23,7 +23,7 @@ for (int iter = 0; iter < 150; iter++) {
     }
   }
 
-  KOKKOS_FUNCTION void operator()(const int) const {}
+  KOKKOS_FUNCTION void operator()(const int i, const int lsum) const {}
 };
 
 
