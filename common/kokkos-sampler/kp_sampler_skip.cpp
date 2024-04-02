@@ -371,7 +371,7 @@ void kokkosp_begin_parallel_reduce(const char* name, const uint32_t devID,
 }
 
 void kokkosp_end_parallel_reduce(const uint64_t kID) {
-  if (NULL != endScanCallee) {
+  if (NULL != endReduceCallee) {
     if (!(infokIDSample.find(kID) == infokIDSample.end())) {
       uint64_t retrievedNestedkID = infokIDSample[kID];
       if (tool_verbosity > 0) {
@@ -382,7 +382,7 @@ void kokkosp_end_parallel_reduce(const uint64_t kID) {
         invoke_ktools_fence(0);
       }
 
-      (*endScanCallee)(retrievedNestedkID);
+      (*endReduceCallee)(retrievedNestedkID);
       infokIDSample.erase(kID);
     }
   }
