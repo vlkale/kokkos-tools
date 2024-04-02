@@ -16,18 +16,18 @@ struct Tester {
     
     int N = 100;
     int64_t result;
-    Kokkos::View<int64_t*> post("postfix_sum", N);
-    Kokkos::View<int64_t*> pre("prefix_sum", N);
+    // Kokkos::View<int64_t*> post("postfix_sum", N);
+   // Kokkos::View<int64_t*> pre("prefix_sum", N);
 
   for (int iter = 0; iter < 150; iter++) { 
       result = 0;
       Kokkos::parallel_scan("named kernel scan",
-                           Kokkos::RangePolicy<execution_space>(space, 0, N),
+                           Kokkos::RangePolicy<execution_space>(space, 0, 1),
                            *this, result);
   } // end timestepping loop
  } // end explicit Tester 
 
-KOKKOS_FUNCTION void operator()(const int i, const int& psum, bool isFinal) const {}
+KOKKOS_FUNCTION void operator()(const int, const int&, bool) const {}
  //if(isFinal) pre(i) = p_sum;
    // p_sum += i;
     //  if(isFinal) post(i) = p_sum;
