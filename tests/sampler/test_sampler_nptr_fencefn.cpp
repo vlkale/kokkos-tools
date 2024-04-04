@@ -12,7 +12,8 @@ struct Tester {
     //! Explicitly launch a kernel with a name, and run it 150 times with kernel
     //! logger. Use a periodic sampling with skip rate 51. This should print
     //! out 2 invocations, and there is a single matcher with a regular
-    //! expression to check this. If the tool fence function pointer is NULL, the program should exit. 
+    //! expression to check this. If the tool fence function pointer is NULL,
+    //! the program should exit.
 
     for (int iter = 0; iter < 150; iter++) {
       Kokkos::parallel_for("named kernel",
@@ -24,9 +25,9 @@ struct Tester {
   KOKKOS_FUNCTION void operator()(const int) const {}
 };
 
-
 /**
- * @test This test checks that the sampling tool does not create a null fence function pointer.
+ * @test This test checks that the sampling tool does not create a null fence
+ function pointer.
  *
 
  */
@@ -52,5 +53,7 @@ TEST(SamplerTest, ktoEnvVarDefault) {
 
   //! Analyze test output.
 
-  EXPECT_THAT(output.str(), testing::Not(testing::HasSubstr("KokkosP: FATAL: Kokkos Tools Programming Interface's tool-invoked Fence is NULL!")));
+  EXPECT_THAT(output.str(), testing::Not(testing::HasSubstr(
+                                "KokkosP: FATAL: Kokkos Tools Programming "
+                                "Interface's tool-invoked Fence is NULL!")));
 }
