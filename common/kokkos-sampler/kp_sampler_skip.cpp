@@ -296,7 +296,7 @@ void kokkosp_end_parallel_for(const uint64_t kID) {
       (*endForCallee)(retrievedNestedkID);
        if (tool_verbosity > 0) {
         std::cout << "KokkosP: sample " << kID
-                  << " finished with child-end function...\n";
+                  << " finished with child-end function.\n";
       }
       infokIDSample.erase(kID);
     }
@@ -344,7 +344,7 @@ void kokkosp_end_parallel_scan(const uint64_t kID) {
       (*endScanCallee)(retrievedNestedkID);
       if (tool_verbosity > 0) {
         std::cout << "KokkosP: sample " << kID
-                  << " finished with child-end function...\n";
+                  << " finished with child-end function.\n";
       }
       infokIDSample.erase(kID);
     }
@@ -392,7 +392,7 @@ void kokkosp_end_parallel_reduce(const uint64_t kID) {
       (*endReduceCallee)(retrievedNestedkID);
          if (tool_verbosity > 0) {
         std::cout << "KokkosP: sample " << kID
-                  << " finished with child-end function...\n";
+                  << " finished with child-end function.\n";
       }
       infokIDSample.erase(kID);
     }
