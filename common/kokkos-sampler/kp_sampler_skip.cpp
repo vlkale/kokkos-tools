@@ -64,14 +64,14 @@ void invoke_ktools_fence(uint32_t devID) {
 }
 
 void kokkosp_provide_tool_programming_interface(
-    uint32_t num_funcs, Kokkos_Tools_ToolProgrammingInterface* funcsFromTPI) {
+    uint32_t num_funcs, Kokkos_Tools_ToolProgrammingInterface funcsFromTPI) {
   if (!num_funcs) {
     if (tool_verbosity > 0)
       printf(
           "KokkosP: Note: Number of functions in Tools Programming Interface "
           "is 0!\n");
   }
-  tpi_funcs = *funcsFromTPI;
+  tpi_funcs = funcsFromTPI;
 }
 
 void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
