@@ -46,7 +46,7 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   Kokkos::finalize();
 
   //! Restore output buffer.
-  // std::cout.flush();
+  std::cout.flush();
   std::cout.rdbuf(coutbuf);
   std::cout << output.str() << std::endl;
 
