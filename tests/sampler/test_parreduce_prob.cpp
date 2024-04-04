@@ -10,9 +10,9 @@ struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
     //! Explicitly launch a kernel with a name, and run it 150 times with kernel
-    //! logger. Use a probabilistic sampling with 100% probability. This should print
-    //! out all 150 invocations, and there is a single matcher with a regular
-    //! expression to check the last two.
+    //! logger. Use a probabilistic sampling with 100% probability. This should
+    //! print out all 150 invocations, and there is a single matcher with a
+    //! regular expression to check the last two.
 
     double sum;
     for (int iter = 0; iter < 150; iter++) {
