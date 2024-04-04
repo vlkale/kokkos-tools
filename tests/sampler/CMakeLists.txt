@@ -24,3 +24,12 @@ kp_add_executable_and_test(
     KOKKOS_TOOLS_SAMPLER_SKIP 50
     KOKKOS_TOOLS_GLOBALFENCES 1
 )
+
+kp_add_executable_and_test(
+    TARGET_NAME       test_sampling_nonullfence
+    SOURCE_FILE       test_toolFenceNotNull.cpp
+    KOKKOS_TOOLS_LIBS kp_kokkos_sampler kp_kernel_logger
+    KOKKOS_TOOLS_SAMPLER_VERBOSE 2
+    KOKKOS_TOOLS_SAMPLER_SKIP 50
+    KOKKOS_TOOLS_GLOBALFENCES 1
+)
