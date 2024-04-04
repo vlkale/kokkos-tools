@@ -10,9 +10,9 @@ struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
     //! Explicitly launch a kernel with a name, and run it 150 times with kernel
-    //! logger. Use a periodic sampling with skip rate 51. This should print
-    //! out 2 invocations, and there is a single matcher with a regular
-    //! expression to check this.
+    //! logger. Use a probabilistic sampling with 100% probability. This should print
+    //! out all 150 invocations, and there is a single matcher with a regular
+    //! expression to check the last two.
 
     for (int iter = 0; iter < 150; iter++) {
       Kokkos::parallel_for("named kernel",
@@ -35,7 +35,7 @@ static const std::vector<std::string> matchers{
     "(.*)KokkosP: sample 149 finished with child-end function.(.*)"};
 
 /**
- * @test This test checks that the tool effectively samples.
+ * @test This test checks that the tool effectively samples using a probability.
  *
 
  */
