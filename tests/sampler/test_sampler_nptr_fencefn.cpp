@@ -52,5 +52,5 @@ TEST(SamplerTest, ktoEnvVarDefault) {
 
   //! Analyze test output.
 
-  EXPECT_THAT(output.str(), testing::Not(testing::HasSubstr("KokkosP: FATAL: Kokkos Tools Programming Interface's tool-invoked Fence is NULL!")))
+  EXPECT_THAT(output.str(), testing::Not(testing::HasSubstr("KokkosP: FATAL: Kokkos Tools Programming Interface's tool-invoked Fence is NULL!")));
 }
