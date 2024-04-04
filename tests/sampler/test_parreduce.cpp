@@ -14,7 +14,7 @@ struct Tester {
     //! out 2 invocations, and there is a single matcher with a regular
     //! expression to check this.
 
-    double sum;
+    int sum;
     for (int iter = 0; iter < 150; iter++) {
       sum = 0;
       Kokkos::parallel_reduce("named kernel",
