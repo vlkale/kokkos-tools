@@ -28,11 +28,11 @@ static const std::vector<std::string> matchers{
     "(.*)KokkosP: sample 51 calling child-begin function...(.*)",
     "(.*)KokkosP: sample 51 finished with child-begin function.(.*)",
     "(.*)KokkosP: sample 51 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 51 calling child-end function.(.*)",
+    "(.*)KokkosP: sample 51 finished with child-end function.(.*)",
     "(.*)KokkosP: sample 102 calling child-begin function...(.*)",
     "(.*)KokkosP: sample 102 finished with child-begin function.(.*)",
     "(.*)KokkosP: sample 102 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 102 calling child-end function.(.*)"};
+    "(.*)KokkosP: sample 102 finished with child-end function.(.*)"};
 
 /**
  * @test This test checks that the tool effectively samples.
