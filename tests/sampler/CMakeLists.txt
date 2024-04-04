@@ -1,6 +1,6 @@
 kp_add_executable_and_test(
-    TARGET_NAME       test_sampler_randomizedsampling
-    SOURCE_FILE       test_randomized_sampling.cpp
+    TARGET_NAME       test_sampling_parfor
+    SOURCE_FILE       test_parfor.cpp
     KOKKOS_TOOLS_LIBS kp_kokkos_sampler kp_kernel_logger
     KOKKOS_TOOLS_SAMPLER_VERBOSE 2
     KOKKOS_TOOLS_SAMPLER_SKIP 50
