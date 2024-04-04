@@ -19,14 +19,11 @@ struct Tester {
 
     for (int iter = 0; iter < 150; iter++) {
       result = 0;
-      Kokkos::parallel_scan(
-          "named kernel scan", N,
-          *this, result);
+      Kokkos::parallel_scan("named kernel scan", N, *this, result);
     }
-  } 
+  }
 
   KOKKOS_FUNCTION void operator()(const int, const int&, bool) const {}
-
 };
 
 static const std::vector<std::string> matchers{
