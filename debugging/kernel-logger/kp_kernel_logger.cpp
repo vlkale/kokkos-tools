@@ -100,7 +100,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char* name,
   printf("    %s\n", name);
 }
 
-extern "C" void kokkospk_end_parallel_scan(const uint64_t kID) {
+extern "C" void kokkosp_end_parallel_scan(const uint64_t kID) {
   printf("KokkosP: Execution of kernel %llu is completed.\n",
          (unsigned long long)(kID));
 }
