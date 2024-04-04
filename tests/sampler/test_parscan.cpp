@@ -16,33 +16,28 @@ struct Tester {
 
     int N = 1024;
     int64_t result;
-    // Kokkos::View<int64_t*> post("postfix_sum", N);
-    // Kokkos::View<int64_t*> pre("prefix_sum", N);
 
     for (int iter = 0; iter < 150; iter++) {
       result = 0;
       Kokkos::parallel_scan(
           "named kernel scan", N,
-          // Kokkos::RangePolicy<execution_space>(space, 0, N),
           *this, result);
-    }  // end timestepping loop
-  }    // end explicit Tester
+    }
+  }
 
   KOKKOS_FUNCTION void operator()(const int, const int&, bool) const {}
-  // if(isFinal) pre(i) = p_sum;
-  // p_sum += i;
-  //  if(isFinal) post(i) = p_sum;
+
 };
 
 static const std::vector<std::string> matchers{
     "(.*)KokkosP: sample 51 calling child-begin function...(.*)",
     "(.*)KokkosP: sample 51 finished with child-begin function.(.*)",
     "(.*)KokkosP: sample 51 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 51 calling child-end function.(.*)",
+    "(.*)KokkosP: sample 51 finished with child-end function.(.*)",
     "(.*)KokkosP: sample 102 calling child-begin function...(.*)",
     "(.*)KokkosP: sample 102 finished with child-begin function.(.*)",
     "(.*)KokkosP: sample 102 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 102 calling child-end function.(.*)"};
+    "(.*)KokkosP: sample 102 finished with child-end function.(.*)"};
 
 /**
  * @test This test checks that the tool effectively samples.
