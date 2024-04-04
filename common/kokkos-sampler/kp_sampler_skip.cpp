@@ -294,7 +294,7 @@ void kokkosp_end_parallel_for(const uint64_t kID) {
         invoke_ktools_fence(0);
       }
       (*endForCallee)(retrievedNestedkID);
-       if (tool_verbosity > 0) {
+      if (tool_verbosity > 0) {
         std::cout << "KokkosP: sample " << kID
                   << " finished with child-end function.\n";
       }
@@ -390,7 +390,7 @@ void kokkosp_end_parallel_reduce(const uint64_t kID) {
         invoke_ktools_fence(0);
       }
       (*endReduceCallee)(retrievedNestedkID);
-         if (tool_verbosity > 0) {
+      if (tool_verbosity > 0) {
         std::cout << "KokkosP: sample " << kID
                   << " finished with child-end function.\n";
       }
