@@ -23,7 +23,7 @@ struct Tester {
     }
   }
 
-  KOKKOS_FUNCTION void operator()(const int, int&) const {}
+  KOKKOS_FUNCTION void operator()(const int, long int&) const {}
 };
 
 static const std::vector<std::string> matchers{
