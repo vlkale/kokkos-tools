@@ -10,6 +10,7 @@ using ::testing::Contains;
 using ::testing::HasSubstr;
 using ::testing::Not;
 using ::testing::Times;
+using ::testing::AtMost;
 
 struct Tester {
   template <typename execution_space>
