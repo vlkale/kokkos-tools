@@ -75,7 +75,7 @@ TEST(SamplerTest, ktoEnvVarDefault) {
       output.str(),
       ::testing::Contains("finished with child-end function.").Times(2));
 
-  EXPECT_THAT(output.str(), ::testing::Not(::testing::HasSubstr(
+  EXPECT_THAT(output.str(), ::testing::Not(
                                 "KokkosP: FATAL: Kokkos Tools Programming "
-                                "Interface's tool-invoked Fence is NULL!")));
+                                "Interface's tool-invoked Fence is NULL!"));
 }
