@@ -64,7 +64,13 @@ TEST(SamplerTest, ktoEnvVarDefault) {
     EXPECT_THAT(output.str(), ::testing::HasSubstr(matcher));
   }  // end TEST
 
-  EXPECT_THAT(output.str(), testing::Not(testing::HasSubstr(
+  EXPECT_THAT(output.str(), ::testing::Contains("calling child-begin function...").Times(2));
+  EXPECT_THAT(output.str(), ::testing::Contains("finished with child-begin function.").Times(2));
+  EXPECT_THAT(output.str(), ::testing::Contains("calling child-end function...").Times(2));
+  EXPECT_THAT(output.str(), ::testing::Contains("finished with child-end function.").Times(2));
+
+  EXPECT_THAT(output.str(), ::testing::Not(::testing::HasSubstr(
                                 "KokkosP: FATAL: Kokkos Tools Programming "
                                 "Interface's tool-invoked Fence is NULL!")));
+  
 }
