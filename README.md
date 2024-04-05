@@ -39,7 +39,7 @@ The following provides an overview of the tools available in the set of Kokkos T
 
 + [**KernelSampler:**](https://github.com/kokkos/kokkos-tools/wiki/KernelSampler)
 
-   A tool which is used in conjunction with analysis tools, to restrict the tooling to samples of Kokkos kernel invocations.
+   A tool to be used in conjunction with analysis tools to restrict the tooling to samples of Kokkos kernel invocations.
 
 ### Memory Analysis
 + [**MemoryHighWater:**](https://github.com/kokkos/kokkos-tools/wiki/MemoryHighWater)
