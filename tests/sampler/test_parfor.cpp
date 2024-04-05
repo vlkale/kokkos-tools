@@ -71,16 +71,16 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   }  // end TEST
 
   EXPECT_THAT(output.str(),
-              Contains.Times(AtMost(2), "calling child-begin function..."));
+              Contains.::testing:::Times(AtMost(2), "calling child-begin function..."));
 
   EXPECT_THAT(output.str(),
-              Contains.Times(AtMost(2), "finished with child-begin function."));
+              Contains.::testing::Times(AtMost(2), "finished with child-begin function."));
 
   EXPECT_THAT(output.str(),
-              Contains.Times(AtMost(2), "calling child-end function..."));
+              Contains.::testing::Times(AtMost(2), "calling child-end function..."));
 
   EXPECT_THAT(output.str(),
-              Contains.Times(AtMost(2), "finished with child-end function."));
+              Contains.::testing::Times(AtMost(2), "finished with child-end function."));
 
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
                                           "sampler utility library to call")));
