@@ -25,14 +25,14 @@ struct Tester {
 };
 
 static const std::vector<std::string> matchers{
-    "(.*)KokkosP: sample 51 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 51 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 51 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 51 finished with child-end function.(.*)",
-    "(.*)KokkosP: sample 102 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 102 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 102 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 102 finished with child-end function.(.*)"};
+    "KokkosP: sample 51 calling child-begin function...",
+    "KokkosP: sample 51 finished with child-begin function.",
+    "KokkosP: sample 51 calling child-end function...",
+    "KokkosP: sample 51 finished with child-end function.",
+    "KokkosP: sample 102 calling child-begin function...",
+    "KokkosP: sample 102 finished with child-begin function.",
+    "KokkosP: sample 102 calling child-end function...",
+    "KokkosP: sample 102 finished with child-end function."};
 
 /**
  * @test This test checks that the tool effectively samples.
@@ -55,12 +55,12 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   Kokkos::finalize();
 
   //! Restore output buffer.
-  // std::cout.flush();
+  std::cout.flush();
   std::cout.rdbuf(coutbuf);
   std::cout << output.str() << std::endl;
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
-    EXPECT_THAT(output.str(), ::testing::ContainsRegex(matcher));
+    EXPECT_THAT(output.str(), ::testing::HasSubstr(matcher));
   }  // end TEST
 }
