@@ -65,15 +65,17 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   }  // end TEST
 
   EXPECT_THAT(output.str(),
-              ::testing::Contains("calling child-begin function...").Times(2));
-  EXPECT_THAT(
-      output.str(),
-      ::testing::Contains("finished with child-begin function.").Times(2));
+              ::testing::Contains("calling child-begin function...")
+                  .::testing::Times(2));
   EXPECT_THAT(output.str(),
-              ::testing::Contains("calling child-end function...").Times(2));
+              ::testing::Contains("finished with child-begin function.")
+                  .::testing::Times(2));
   EXPECT_THAT(
       output.str(),
-      ::testing::Contains("finished with child-end function.").Times(2));
+      ::testing::Contains("calling child-end function...").::testing::Times(2));
+  EXPECT_THAT(output.str(),
+              ::testing::Contains("finished with child-end function.")
+                  .::testing::Times(2));
 
   EXPECT_THAT(output.str(),
               ::testing::Not("KokkosP: FATAL: Kokkos Tools Programming "
