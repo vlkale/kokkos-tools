@@ -63,4 +63,8 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   for (const auto& matcher : matchers) {
     EXPECT_THAT(output.str(), ::testing::HasSubstr(matcher));
   }  // end TEST
+
+  EXPECT_THAT(output.str(), testing::Not(testing::HasSubstr(
+                                "KokkosP: FATAL: Kokkos Tools Programming "
+                                "Interface's tool-invoked Fence is NULL!")));
 }
