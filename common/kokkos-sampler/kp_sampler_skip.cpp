@@ -51,13 +51,11 @@ void invoke_ktools_fence(uint32_t devID) {
   if (tpi_funcs.fence != nullptr) {
     tpi_funcs.fence(devID);
     if (tool_verbosity > 1) {
-      std::cout << "KokkosP: Sampler utility sucessfully invoked tool-induced "
-                   "fence on device "
+      std::cout << "KokkosP: Sampler utility sucessfully invoked tool-induced fence on device "
                 << getDeviceID(devID) << ".\n";
     }
   } else {
-    std::cout << "KokkosP: FATAL: Kokkos Tools Programming Interface's "
-                 "tool-invoked Fence is NULL!\n";
+    std::cout << "KokkosP: FATAL: Kokkos Tools Programming Interface's tool-invoked Fence is NULL!\n";
     exit(-1);
   }
 }
@@ -66,9 +64,7 @@ void kokkosp_provide_tool_programming_interface(
     uint32_t num_funcs, Kokkos_Tools_ToolProgrammingInterface funcsFromTPI) {
   if (!num_funcs) {
     if (tool_verbosity > 0)
-      printf(
-          "KokkosP: Note: Number of functions in Tools Programming Interface "
-          "is 0!\n");
+      std::cout << "KokkosP: Note: Number of functions in Tools Programming Interface is 0!\n";
   }
   tpi_funcs = funcsFromTPI;
 }
@@ -95,7 +91,7 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
         "variable. Please use KOKKOS_TOOLS_LIBS\n");
     profileLibrary = getenv("KOKKOS_PROFILE_LIBRARY");
     if (NULL == profileLibrary) {
-      printf("KokkosP: No library to call in %s\n", profileLibrary);
+      std::cout << "KokkosP: FATAL: No library to call in " << profileLibrary << "!\n";
       exit(-1);
     }
   }
@@ -112,12 +108,12 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
   nextLibrary = strtok(NULL, ";");
 
   if (NULL == nextLibrary) {
-    printf("KokkosP: No child library to call in %s\n", profileLibrary);
+    std::cout << "KokkosP: FATAL: No child library of sampler utility library to call in " << profileLibrary << "!\n";
     exit(-1);
   } else {
     if (tool_verbosity > 0) {
-      printf("KokkosP: Next library to call: %s\n", nextLibrary);
-      printf("KokkosP: Loading child library ..\n");
+      std::cout << "KokkosP: Next library to call: " << nextLibrary << "\n";
+      std::cout << "KokkosP: Loading child library of sampler..\n";
     }
 
     void* childLibrary = dlopen(nextLibrary, RTLD_NOW | RTLD_GLOBAL);
@@ -152,19 +148,13 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
       }
 
       if (tool_verbosity > 0) {
-        printf("KokkosP: Function Status:\n");
-        printf("KokkosP: begin-parallel-for:      %s\n",
-               (beginForCallee == NULL) ? "no" : "yes");
-        printf("KokkosP: begin-parallel-scan:     %s\n",
-               (beginScanCallee == NULL) ? "no" : "yes");
-        printf("KokkosP: begin-parallel-reduce:   %s\n",
-               (beginReduceCallee == NULL) ? "no" : "yes");
-        printf("KokkosP: end-parallel-for:        %s\n",
-               (endForCallee == NULL) ? "no" : "yes");
-        printf("KokkosP: end-parallel-scan:       %s\n",
-               (endScanCallee == NULL) ? "no" : "yes");
-        printf("KokkosP: end-parallel-reduce:     %s\n",
-               (endReduceCallee == NULL) ? "no" : "yes");
+        std::cout << "KokkosP: Function Status:\n";
+        std::cout << "KokkosP: begin-parallel-for:      " << ((beginForCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-scan:      " << ((beginScanCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-reduce:      " << ((beginReduceCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-for:      " << ((endForCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-scan:      " << ((endScanCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-reduce:      " << ((endReduceCallee == NULL) ? "no" : "yes") << "\n";
       }
     }
   }
@@ -179,7 +169,7 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
   }
 
   if (tool_verbosity > 0) {
-    printf("KokkosP: Sampling rate set to: %s\n", tool_sample);
+    std::cout << "KokkosP: Sampling rate set to: " << tool_sample << "\n";
   }
 }
 
