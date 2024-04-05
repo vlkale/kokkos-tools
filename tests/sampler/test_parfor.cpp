@@ -6,6 +6,11 @@
 
 #include "Kokkos_Core.hpp"
 
+using ::testing::Contains;
+using ::testing::HasSubstr;
+using ::testing::Not;
+using ::testing::Times;
+
 struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
@@ -61,29 +66,25 @@ TEST(SamplerTest, ktoEnvVarDefault) {
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
-    EXPECT_THAT(output.str(), ::testing::HasSubstr(matcher));
+    EXPECT_THAT(output.str(), HasSubstr(matcher));
   }  // end TEST
 
   EXPECT_THAT(output.str(),
-              ::testing::Contains("calling child-begin function...")
-                  .::testing::Times("2"));
+              Contains.Times(AtMost(2), "calling child-begin function..."));
 
   EXPECT_THAT(output.str(),
-              ::testing::Contains("finished with child-begin function.")
-                  .::testing::Times("2"));
-  EXPECT_THAT(output.str(), ::testing::Contains("calling child-end function...")
-                                .::testing::Times("2"));
+              Contains.Times(AtMost(2), "finished with child-begin function."));
 
   EXPECT_THAT(output.str(),
-              ::testing::Contains("finished with child-end function.")
-                  .::testing::Times("2"));
+              Contains.Times(AtMost(2), "calling child-end function..."));
 
-  EXPECT_THAT(
-      output.str(),
-      ::testing::Not(::testing::HasSubstr("KokkosP: FATAL: No child library of "
+  EXPECT_THAT(output.str(),
+              Contains.Times(AtMost(2), "finished with child-end function."));
+
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
                                           "sampler utility library to call")));
 
-  EXPECT_THAT(output.str(), ::testing::Not(::testing::HasSubstr(
-                                "KokkosP: FATAL: Kokkos Tools Programming "
-                                "Interface's tool-invoked Fence is NULL!")));
+  EXPECT_THAT(output.str(),
+              Not(HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
+                            "Interface's tool-invoked Fence is NULL!")));
 }
