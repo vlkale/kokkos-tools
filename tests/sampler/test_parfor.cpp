@@ -6,7 +6,6 @@
 
 #include "Kokkos_Core.hpp"
 
-using ::testing::AtMost;
 using ::testing::Contains;
 using ::testing::HasSubstr;
 using ::testing::Not;
