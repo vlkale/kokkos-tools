@@ -67,17 +67,22 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   EXPECT_THAT(output.str(),
               ::testing::Contains("calling child-begin function...")
                   .::testing::Times("2"));
+
   EXPECT_THAT(output.str(),
               ::testing::Contains("finished with child-begin function.")
                   .::testing::Times("2"));
   EXPECT_THAT(
       output.str(),
       ::testing::Contains("calling child-end function...").::testing::Times("2"));
+
   EXPECT_THAT(output.str(),
               ::testing::Contains("finished with child-end function.")
                   .::testing::Times("2"));
 
   EXPECT_THAT(output.str(),
-              ::testing::Not("KokkosP: FATAL: Kokkos Tools Programming "
-                             "Interface's tool-invoked Fence is NULL!"));
+              ::testing::Not(::testing::HasSubstr("KokkosP: FATAL: No child library of sampler utility library to call")));
+
+  EXPECT_THAT(output.str(),
+              ::testing::Not(::testing::HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
+                             "Interface's tool-invoked Fence is NULL!")));
 }
