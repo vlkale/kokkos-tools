@@ -6,10 +6,8 @@
 
 #include "Kokkos_Core.hpp"
 
-using ::testing::Contains;
 using ::testing::HasSubstr;
 using ::testing::Not;
-using ::testing::Times;
 
 struct Tester {
   template <typename execution_space>
