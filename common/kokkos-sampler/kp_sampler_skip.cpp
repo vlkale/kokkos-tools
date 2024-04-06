@@ -51,11 +51,13 @@ void invoke_ktools_fence(uint32_t devID) {
   if (tpi_funcs.fence != nullptr) {
     tpi_funcs.fence(devID);
     if (tool_verbosity > 1) {
-      std::cout << "KokkosP: Sampler utility sucessfully invoked tool-induced fence on device "
+      std::cout << "KokkosP: Sampler utility sucessfully invoked tool-induced "
+                   "fence on device "
                 << getDeviceID(devID) << ".\n";
     }
   } else {
-    std::cout << "KokkosP: FATAL: Kokkos Tools Programming Interface's tool-invoked Fence is NULL!\n";
+    std::cout << "KokkosP: FATAL: Kokkos Tools Programming Interface's "
+                 "tool-invoked Fence is NULL!\n";
     exit(-1);
   }
 }
@@ -64,7 +66,8 @@ void kokkosp_provide_tool_programming_interface(
     uint32_t num_funcs, Kokkos_Tools_ToolProgrammingInterface funcsFromTPI) {
   if (!num_funcs) {
     if (tool_verbosity > 0)
-      std::cout << "KokkosP: Note: Number of functions in Tools Programming Interface is 0!\n";
+      std::cout << "KokkosP: Note: Number of functions in Tools Programming "
+                   "Interface is 0!\n";
   }
   tpi_funcs = funcsFromTPI;
 }
@@ -91,7 +94,8 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
         "variable. Please use KOKKOS_TOOLS_LIBS\n");
     profileLibrary = getenv("KOKKOS_PROFILE_LIBRARY");
     if (NULL == profileLibrary) {
-      std::cout << "KokkosP: FATAL: No library to call in " << profileLibrary << "!\n";
+      std::cout << "KokkosP: FATAL: No library to call in " << profileLibrary
+                << "!\n";
       exit(-1);
     }
   }
@@ -108,7 +112,9 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
   nextLibrary = strtok(NULL, ";");
 
   if (NULL == nextLibrary) {
-    std::cout << "KokkosP: FATAL: No child library of sampler utility library to call in " << profileLibrary << "!\n";
+    std::cout << "KokkosP: FATAL: No child library of sampler utility library "
+                 "to call in "
+              << profileLibrary << "!\n";
     exit(-1);
   } else {
     if (tool_verbosity > 0) {
@@ -149,12 +155,18 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
 
       if (tool_verbosity > 0) {
         std::cout << "KokkosP: Function Status:\n";
-        std::cout << "KokkosP: begin-parallel-for:      " << ((beginForCallee == NULL) ? "no" : "yes") << "\n";
-        std::cout << "KokkosP: begin-parallel-scan:      " << ((beginScanCallee == NULL) ? "no" : "yes") << "\n";
-        std::cout << "KokkosP: begin-parallel-reduce:      " << ((beginReduceCallee == NULL) ? "no" : "yes") << "\n";
-        std::cout << "KokkosP: end-parallel-for:      " << ((endForCallee == NULL) ? "no" : "yes") << "\n";
-        std::cout << "KokkosP: end-parallel-scan:      " << ((endScanCallee == NULL) ? "no" : "yes") << "\n";
-        std::cout << "KokkosP: end-parallel-reduce:      " << ((endReduceCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-for:      "
+                  << ((beginForCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-scan:      "
+                  << ((beginScanCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-reduce:      "
+                  << ((beginReduceCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-for:      "
+                  << ((endForCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-scan:      "
+                  << ((endScanCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-reduce:      "
+                  << ((endReduceCallee == NULL) ? "no" : "yes") << "\n";
       }
     }
   }
