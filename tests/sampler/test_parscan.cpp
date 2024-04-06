@@ -6,6 +6,8 @@
 
 #include "Kokkos_Core.hpp"
 
+using ::testing::HasSubstr;
+using ::testing::Not;
 struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
@@ -41,6 +43,7 @@ static const std::vector<std::string> matchers{
  *
 
  */
+
 TEST(SamplerTest, ktoEnvVarDefault) {
   //! Initialize @c Kokkos.
   Kokkos::initialize();
@@ -57,12 +60,19 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   Kokkos::finalize();
 
   //! Restore output buffer.
-  // std::cout.flush();
+  std::cout.flush();
   std::cout.rdbuf(coutbuf);
   std::cout << output.str() << std::endl;
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
-    EXPECT_THAT(output.str(), ::testing::ContainsRegex(matcher));
+    EXPECT_THAT(output.str(), HasSubstr(matcher));
   }  // end TEST
+
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
+                                          "sampler utility library to call")));
+
+  EXPECT_THAT(output.str(),
+              Not(HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
+                            "Interface's tool-invoked Fence is NULL!")));
 }
