@@ -38,13 +38,11 @@ static const std::vector<std::string> matchers{
     "KokkosP: sample 102 calling child-end function...",
     "KokkosP: sample 102 finished with child-end function."};
 
-
 /**
  * @test This test checks that the tool effectively samples.
  *
 
  */
-
 
 TEST(SamplerTest, ktoEnvVarDefault) {
   //! Initialize @c Kokkos.
@@ -77,5 +75,4 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   EXPECT_THAT(output.str(),
               Not(HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
                             "Interface's tool-invoked Fence is NULL!")));
-
 }
