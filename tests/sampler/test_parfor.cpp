@@ -6,9 +6,9 @@
 
 #include "Kokkos_Core.hpp"
 
+using ::testing::Contains;
 using ::testing::HasSubstr;
 using ::testing::Not;
-using ::testing::Contains;
 using ::testing::Times;
 
 struct Tester {
@@ -69,11 +69,19 @@ TEST(SamplerTest, ktoEnvVarDefault) {
     EXPECT_THAT(output.str(), HasSubstr(matcher));
   }  // end TEST
 
-  EXPECT_THAT(output.str(), ::testing::Contains.Times(static_cast<int>(2), "calling child-begin function..."));
-  EXPECT_THAT(output.str(), ::testing::Contains.Times(static_cast<int>(2), "finished with child-begin function."));
+  EXPECT_THAT(output.str(),
+              ::testing::Contains.Times(static_cast<int>(2),
+                                        "calling child-begin function..."));
+  EXPECT_THAT(output.str(),
+              ::testing::Contains.Times(static_cast<int>(2),
+                                        "finished with child-begin function."));
 
-  EXPECT_THAT(output.str(), ::testing::Contains.Times(static_cast<int>(2), "calling child-end function..."));
-  EXPECT_THAT(output.str(), ::testing::Contains.Times(static_cast<int>(2), "finished with child-end function."));
+  EXPECT_THAT(output.str(),
+              ::testing::Contains.Times(static_cast<int>(2),
+                                        "calling child-end function..."));
+  EXPECT_THAT(output.str(),
+              ::testing::Contains.Times(static_cast<int>(2),
+                                        "finished with child-end function."));
 
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
                                           "sampler utility library to call")));
