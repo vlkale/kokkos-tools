@@ -70,6 +70,10 @@ TEST(SamplerTest, ktoEnvVarDefault) {
     EXPECT_THAT(output.str(), HasSubstr(matcher));
   }
 
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 1 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 75 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 149 calling")));
+
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
                                           "sampler utility library to call")));
 
