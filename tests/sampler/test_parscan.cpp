@@ -19,7 +19,7 @@ struct Tester {
     //! out 2 invocations, and there is a single matcher with a regular
     //! expression to check this.
 
-    int N = 1024;
+    long int N = 1024;
     int64_t result;
 
     for (int iter = 0; iter < 150; iter++) {
