@@ -6,6 +6,8 @@
 
 #include "Kokkos_Core.hpp"
 
+using ::testing::HasSubstr;
+using ::testing::Not;
 struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
@@ -17,7 +19,7 @@ struct Tester {
     long int sum;
     for (int iter = 0; iter < 150; iter++) {
       sum = 0;
-      Kokkos::parallel_reduce("named kernel",
+      Kokkos::parallel_reduce("named kernel reduce",
                               Kokkos::RangePolicy<execution_space>(space, 0, 1),
                               *this, sum);
     }
@@ -27,20 +29,23 @@ struct Tester {
 };
 
 static const std::vector<std::string> matchers{
-    "(.*)KokkosP: sample 51 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 51 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 51 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 51 finished with child-end function.(.*)",
-    "(.*)KokkosP: sample 102 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 102 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 102 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 102 finished with child-end function.(.*)"};
+    "KokkosP: sample 51 calling child-begin function...",
+    "KokkosP: sample 51 finished with child-begin function.",
+    "KokkosP: sample 51 calling child-end function...",
+    "KokkosP: sample 51 finished with child-end function.",
+    "KokkosP: sample 102 calling child-begin function...",
+    "KokkosP: sample 102 finished with child-begin function.",
+    "KokkosP: sample 102 calling child-end function...",
+    "KokkosP: sample 102 finished with child-end function."};
+
 
 /**
  * @test This test checks that the tool effectively samples.
  *
 
  */
+
+
 TEST(SamplerTest, ktoEnvVarDefault) {
   //! Initialize @c Kokkos.
   Kokkos::initialize();
@@ -57,12 +62,20 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   Kokkos::finalize();
 
   //! Restore output buffer.
-  // std::cout.flush();
+  std::cout.flush();
   std::cout.rdbuf(coutbuf);
   std::cout << output.str() << std::endl;
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
-    EXPECT_THAT(output.str(), ::testing::ContainsRegex(matcher));
-  }  // end TEST
+    EXPECT_THAT(output.str(), HasSubstr(matcher));
+  }
+
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
+                                          "sampler utility library to call")));
+
+  EXPECT_THAT(output.str(),
+              Not(HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
+                            "Interface's tool-invoked Fence is NULL!")));
+
 }
