@@ -18,7 +18,7 @@ struct Tester {
     //! expression to check this.
 
     long int N = 1024;
-    int64_t result;
+    long int result;
 
     for (int iter = 0; iter < 150; iter++) {
       result = 0;
