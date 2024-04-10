@@ -12,13 +12,13 @@ using ::testing::Not;
 struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
-    //! Explicitly launch a kernel with a name, and run it 150 times with kernel
-    //! logger. Use a periodic sampling with skip rate 51. This should print
+    //! Explicitly launch a kernel with a name, and run it 15 times with kernel
+    //! logger. Use a periodic sampling with skip rate 5. This should print
     //! out 2 invocations, and there is a single matcher with a regular
     //! expression to check this.
 
     long int sum;
-    for (int iter = 0; iter < 150; iter++) {
+    for (int iter = 0; iter < 15; iter++) {
       sum = 0;
       Kokkos::parallel_reduce("named kernel reduce",
                               Kokkos::RangePolicy<execution_space>(space, 0, 1),
@@ -30,14 +30,14 @@ struct Tester {
 };
 
 static const std::vector<std::string> matchers{
-    "KokkosP: sample 51 calling child-begin function...",
-    "KokkosP: sample 51 finished with child-begin function.",
-    "KokkosP: sample 51 calling child-end function...",
-    "KokkosP: sample 51 finished with child-end function.",
-    "KokkosP: sample 102 calling child-begin function...",
-    "KokkosP: sample 102 finished with child-begin function.",
-    "KokkosP: sample 102 calling child-end function...",
-    "KokkosP: sample 102 finished with child-end function."};
+    "KokkosP: sample 6 calling child-begin function...",
+    "KokkosP: sample 6 finished with child-begin function.",
+    "KokkosP: sample 6 calling child-end function...",
+    "KokkosP: sample 6 finished with child-end function.",
+    "KokkosP: sample 11 calling child-begin function...",
+    "KokkosP: sample 11 finished with child-begin function.",
+    "KokkosP: sample 11 calling child-end function...",
+    "KokkosP: sample 11 finished with child-end function."};
 
 /**
  * @test This test checks that the tool effectively samples.
