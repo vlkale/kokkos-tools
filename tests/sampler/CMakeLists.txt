@@ -3,7 +3,7 @@ kp_add_executable_and_test(
     SOURCE_FILE       test_parfor.cpp
     KOKKOS_TOOLS_LIBS kp_kokkos_sampler kp_kernel_logger
     KOKKOS_TOOLS_SAMPLER_VERBOSE 2
-    KOKKOS_TOOLS_SAMPLER_SKIP 50
+    KOKKOS_TOOLS_SAMPLER_SKIP 5
     KOKKOS_TOOLS_GLOBALFENCES 1
 )
 
@@ -12,7 +12,7 @@ kp_add_executable_and_test(
     SOURCE_FILE       test_parscan.cpp
     KOKKOS_TOOLS_LIBS kp_kokkos_sampler kp_kernel_logger
     KOKKOS_TOOLS_SAMPLER_VERBOSE 2
-    KOKKOS_TOOLS_SAMPLER_SKIP 50
+    KOKKOS_TOOLS_SAMPLER_SKIP 5
     KOKKOS_TOOLS_GLOBALFENCES 1
 )
 
@@ -21,6 +21,6 @@ kp_add_executable_and_test(
     SOURCE_FILE       test_parreduce.cpp
     KOKKOS_TOOLS_LIBS kp_kokkos_sampler kp_kernel_logger
     KOKKOS_TOOLS_SAMPLER_VERBOSE 2
-    KOKKOS_TOOLS_SAMPLER_SKIP 50
+    KOKKOS_TOOLS_SAMPLER_SKIP 5
     KOKKOS_TOOLS_GLOBALFENCES 1
 )
