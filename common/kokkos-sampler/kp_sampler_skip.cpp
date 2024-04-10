@@ -56,8 +56,9 @@ void invoke_ktools_fence(uint32_t devID) {
                 << getDeviceID(devID) << ".\n";
     }
   } else {
-    std::cout << "KokkosP: FATAL: Kokkos Tools Programming Interface's "
+    std::cerr << "KokkosP: FATAL: Kokkos Tools Programming Interface's "
                  "tool-invoked Fence is NULL!\n";
+    std::abort();
     exit(-1);
   }
 }
