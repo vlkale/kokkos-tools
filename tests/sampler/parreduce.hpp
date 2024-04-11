@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 struct Tester {
   template <typename execution_space>
