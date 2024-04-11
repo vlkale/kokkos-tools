@@ -1,3 +1,4 @@
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -74,4 +75,5 @@ TEST(SamplerSkipTest, parfor) {
   EXPECT_THAT(output.str(),
               Not(HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
                             "Interface's tool-invoked Fence is NULL!")));
+
 }

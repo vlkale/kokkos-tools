@@ -249,6 +249,7 @@ void kokkosp_init_library(const int loadSeq, const uint64_t interfaceVer,
         << tool_prob_num
         << " percent. The skip rate for sampler will not be used.\n";
   }
+
   kernelSampleSkip = 1;
 }
 
