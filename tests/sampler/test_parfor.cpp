@@ -83,7 +83,7 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 14 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 15 calling")));
 
-  int occurrences = 0;
+  int occurrences            = 0;
   std::string::size_type pos = 0;
   std::string samplerTestOutput(output.str());
   std::string target("calling child-begin function");
