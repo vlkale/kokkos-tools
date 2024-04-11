@@ -39,27 +39,9 @@ static const std::vector<std::string> matchers{
     "KokkosP: sample 11 finished with child-begin function.",
     "KokkosP: sample 11 calling child-end function...",
     "KokkosP: sample 11 finished with child-end function."};
-
-/**
- * @test This test checks that the tool effectively samples.
+/*
+ * @test This test checks that the sampling utility properly samples.
  *
-
- */
-
-static const std::vector<std::string> matchers{
-    "KokkosP: sample 6 calling child-begin function...",
-    "KokkosP: sample 6 finished with child-begin function.",
-    "KokkosP: sample 6 calling child-end function...",
-    "KokkosP: sample 6 finished with child-end function.",
-    "KokkosP: sample 11 calling child-begin function...",
-    "KokkosP: sample 11 finished with child-begin function.",
-    "KokkosP: sample 11 calling child-end function...",
-    "KokkosP: sample 11 finished with child-end function."};
-
-/**
- * @test This test checks that the tool effectively samples.
- *
-
  */
 TEST(SamplerTest, ktoEnvVarDefault) {
   //! Initialize @c Kokkos.
