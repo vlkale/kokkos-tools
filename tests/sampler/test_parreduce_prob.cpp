@@ -37,6 +37,6 @@ TEST(SamplerProbTest, parreduce) {
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
-    EXPECT_THAT(output.str(), HasSubStr(matcher));
+    EXPECT_THAT(output.str(), HasSubstr(matcher));
   }  // end TEST
 }
