@@ -7,23 +7,16 @@
 #include "Kokkos_Core.hpp"
 
 #include "parfor.hpp"
+#include "matchersProb.hpp"
 
-static const std::vector<std::string> matchers{
-    "(.*)KokkosP: sample 148 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 148 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 148 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 148 finished with child-end function.(.*)",
-    "(.*)KokkosP: sample 149 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 149 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 149 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 149 finished with child-end function.(.*)"};
+using ::testing::HasSubstr;
 
 /**
  * @test This test checks that the tool effectively samples using a probability.
  *
 
  */
-TEST(SamplerTest, ktoEnvVarDefault) {
+TEST(SamplerProbTest, parfor) {
   //! Initialize @c Kokkos.
   Kokkos::initialize();
 
@@ -45,6 +38,6 @@ TEST(SamplerTest, ktoEnvVarDefault) {
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
-    EXPECT_THAT(output.str(), ::testing::ContainsRegex(matcher));
+    EXPECT_THAT(output.str(), HasSubstr(matcher));
   }  // end TEST
 }

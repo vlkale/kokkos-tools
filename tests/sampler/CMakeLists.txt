@@ -1,3 +1,4 @@
+
 ## tests for skip rate 5, no fencing selected
 
 kp_add_executable_and_test(
