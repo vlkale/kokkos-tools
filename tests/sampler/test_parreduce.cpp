@@ -100,13 +100,16 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 14 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 15 calling")));
 
+
   int occurrences = 0;
-  while (std::string::size_type pos = 0;
-         (pos = s.find("calling child-begin function", pos)) !=
-         std::string::npos) {
+  std::string::size_type pos = 0;
+  std::string samplerTestOutput(output.str());
+  std::string target("calling child-begin function");
+  while ((pos = samplerTestOutput.find(target, pos)) != std::string::npos) {
     ++occurrences;
     pos += target.length();
   }
+
   EXPECT_EQ(occurrences, 2);
 
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
