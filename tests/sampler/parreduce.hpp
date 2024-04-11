@@ -1,3 +1,5 @@
+#pragma once 
+
 struct Tester {
   template <typename execution_space>
   explicit Tester(const execution_space& space) {
