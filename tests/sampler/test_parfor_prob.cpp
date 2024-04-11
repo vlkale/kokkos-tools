@@ -6,23 +6,7 @@
 
 #include "Kokkos_Core.hpp"
 
-struct Tester {
-  template <typename execution_space>
-  explicit Tester(const execution_space& space) {
-    //! Explicitly launch a kernel with a name, and run it 150 times with kernel
-    //! logger. Use a probabilistic sampling with 100% probability. This should
-    //! print out all 150 invocations, and there is a single matcher with a
-    //! regular expression to check the last two.
-
-    for (int iter = 0; iter < 150; iter++) {
-      Kokkos::parallel_for("named kernel",
-                           Kokkos::RangePolicy<execution_space>(space, 0, 1),
-                           *this);
-    }
-  }
-
-  KOKKOS_FUNCTION void operator()(const int) const {}
-};
+#include "parfor.hpp"
 
 static const std::vector<std::string> matchers{
     "(.*)KokkosP: sample 148 calling child-begin function...(.*)",
