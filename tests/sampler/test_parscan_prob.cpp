@@ -6,35 +6,17 @@
 
 #include "Kokkos_Core.hpp"
 
-struct Tester {
-  template <typename execution_space>
-  explicit Tester(const execution_space& space) {
-    //! Explicitly launch a kernel with a name, and run it 150 times with kernel
-    //! logger. Use a probabilistic sampling with 100% probability. This should
-    //! print out all 150 invocations, and there is a single matcher with a
-    //! regular expression to check the last two.
-
-    int N = 1024;
-    int64_t result;
-
-    for (int iter = 0; iter < 150; iter++) {
-      result = 0;
-      Kokkos::parallel_scan("named kernel scan", N, *this, result);
-    }
-  }
-
-  KOKKOS_FUNCTION void operator()(const int, const int&, bool) const {}
-};
+#include "parscan.hpp"
 
 static const std::vector<std::string> matchers{
-    "(.*)KokkosP: sample 148 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 148 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 148 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 148 finished with child-end function.(.*)",
-    "(.*)KokkosP: sample 149 calling child-begin function...(.*)",
-    "(.*)KokkosP: sample 149 finished with child-begin function.(.*)",
-    "(.*)KokkosP: sample 149 calling child-end function...(.*)",
-    "(.*)KokkosP: sample 149 finished with child-end function.(.*)"};
+    "(.*)KokkosP: sample 6 calling child-begin function...(.*)",
+    "(.*)KokkosP: sample 6 finished with child-begin function.(.*)",
+    "(.*)KokkosP: sample 6 calling child-end function...(.*)",
+    "(.*)KokkosP: sample 6 finished with child-end function.(.*)",
+    "(.*)KokkosP: sample 12 calling child-begin function...(.*)",
+    "(.*)KokkosP: sample 12 finished with child-begin function.(.*)",
+    "(.*)KokkosP: sample 12 calling child-end function...(.*)",
+    "(.*)KokkosP: sample 12 finished with child-end function.(.*)"};
 
 /**
  * @test This test checks that the tool effectively samples.
@@ -57,7 +39,7 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   Kokkos::finalize();
 
   //! Restore output buffer.
-  // std::cout.flush();
+  std::cout.flush();
   std::cout.rdbuf(coutbuf);
   std::cout << output.str() << std::endl;
 
