@@ -35,10 +35,10 @@ static const std::vector<std::string> matchers{
     "KokkosP: sample 6 finished with child-begin function.",
     "KokkosP: sample 6 calling child-end function...",
     "KokkosP: sample 6 finished with child-end function.",
-    "KokkosP: sample 11 calling child-begin function...",
-    "KokkosP: sample 11 finished with child-begin function.",
-    "KokkosP: sample 11 calling child-end function...",
-    "KokkosP: sample 11 finished with child-end function."};
+    "KokkosP: sample 12 calling child-begin function...",
+    "KokkosP: sample 12 finished with child-begin function.",
+    "KokkosP: sample 12 calling child-end function...",
+    "KokkosP: sample 12 finished with child-end function."};
 /*
  * @test This test checks that the sampling utility properly samples.
  *
@@ -77,7 +77,7 @@ TEST(SamplerTest, ktoEnvVarDefault) {
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 8 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 9 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 10 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 12 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 11 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 13 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 14 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 15 calling")));
