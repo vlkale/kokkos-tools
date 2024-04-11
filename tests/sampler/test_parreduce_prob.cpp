@@ -1,3 +1,5 @@
+
+#include <string>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -6,15 +8,18 @@
 
 #include "Kokkos_Core.hpp"
 
+using ::testing::Contains;
+using ::testing::HasSubstr;
+using ::testing::Not;
+
 #include "parreduce.hpp"
 #include "matchersProb.hpp"
 
-using ::testing::HasSubstr;
 /**
- * @test This test checks that the tool effectively samples with probability.
+ * @test This test checks that the tool effectively samples.
  *
-
  */
+
 TEST(SamplerProbTest, parreduce) {
   //! Initialize @c Kokkos.
   Kokkos::initialize();
@@ -31,12 +36,37 @@ TEST(SamplerProbTest, parreduce) {
   Kokkos::finalize();
 
   //! Restore output buffer.
-  // std::cout.flush();
+  std::cout.flush();
   std::cout.rdbuf(coutbuf);
   std::cout << output.str() << std::endl;
 
   //! Analyze test output.
   for (const auto& matcher : matchers) {
     EXPECT_THAT(output.str(), HasSubstr(matcher));
-  }  // end TEST
+  }
+
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 1 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 2 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 7 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 9 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 10 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 11 calling")));
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 15 calling")));
+
+  int occurrences            = 0;
+  std::string::size_type pos = 0;
+  std::string samplerTestOutput(output.str());
+  std::string target("calling child-begin function");
+  while ((pos = samplerTestOutput.find(target, pos)) != std::string::npos) {
+    ++occurrences;
+    pos += target.length();
+  }
+  EXPECT_EQ(occurrences, 8);
+
+  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
+                                          "sampler utility library to call")));
+
+  EXPECT_THAT(output.str(),
+              Not(HasSubstr("KokkosP: FATAL: Kokkos Tools Programming "
+                            "Interface's tool-invoked Fence is NULL!")));
 }
