@@ -27,6 +27,22 @@
 
 #include "kp_papi_connector_domain.h"
 
+typedef void (*initFunction)(const int, const uint64_t, const uint32_t, void*);
+typedef void (*finalizeFunction)();
+typedef void (*beginFunction)(const char*, const uint32_t, uint64_t*);
+typedef void (*endFunction)(uint64_t);
+
+static initFunction initProfileLibrary         = NULL;
+static finalizeFunction finalizeProfileLibrary = NULL;
+static beginFunction beginForCallee            = NULL;
+static beginFunction beginScanCallee           = NULL;
+static beginFunction beginReduceCallee         = NULL;
+static endFunction endForCallee                = NULL;
+static endFunction endScanCallee               = NULL;
+static endFunction endReduceCallee             = NULL;
+
+
+
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
                                      const uint32_t devInfoCount,
@@ -35,7 +51,95 @@ extern "C" void kokkosp_init_library(const int loadSeq,
   printf("KokkosP: PAPI Connector (sequence is %d, version: %llu)\n", loadSeq,
          interfaceVer);
   printf("-----------------------------------------------------------\n");
+  
+  char* profileLibrary = getenv("KOKKOS_TOOLS_LIBS");
+  if (NULL == profileLibrary) {
+    printf(
+        "Checking KOKKOS_PROFILE_LIBRARY. WARNING: This is a depreciated "
+        "variable. Please use KOKKOS_TOOLS_LIBS\n");
+    profileLibrary = getenv("KOKKOS_PROFILE_LIBRARY");
+    if (NULL == profileLibrary) {
+      std::cout << "KokkosP: FATAL: No library to call in " << profileLibrary
+                << "!\n";
+      exit(-1);
+    }
+  }
 
+
+  
+  char* envBuffer = (char*)malloc(sizeof(char) * (strlen(profileLibrary) + 1));
+  strcpy(envBuffer, profileLibrary);
+
+  char* nextLibrary = strtok(envBuffer, ";");
+
+  for (int i = 0; i < loadSeq; i++) {
+    nextLibrary = strtok(NULL, ";");
+  }
+
+  nextLibrary = strtok(NULL, ";");
+
+  if (NULL == nextLibrary) {
+    std::cout << "KokkosP: FATAL: No child library of sampler utility library "
+                 "to call in "
+              << profileLibrary << "!\n";
+    exit(-1);
+  } else {
+    if (tool_verbosity > 0) {
+      std::cout << "KokkosP: Next library to call: " << nextLibrary << "\n";
+      std::cout << "KokkosP: Loading child library of sampler..\n";
+    }
+
+    void* childLibrary = dlopen(nextLibrary, RTLD_NOW | RTLD_GLOBAL);
+
+    if (NULL == childLibrary) {
+      fprintf(stderr, "KokkosP: Error: Unable to load: %s (Error=%s)\n",
+              nextLibrary, dlerror());
+      exit(-1);
+    } else {
+      beginForCallee =
+          (beginFunction)dlsym(childLibrary, "kokkosp_begin_parallel_for");
+      beginScanCallee =
+          (beginFunction)dlsym(childLibrary, "kokkosp_begin_parallel_scan");
+      beginReduceCallee =
+          (beginFunction)dlsym(childLibrary, "kokkosp_begin_parallel_reduce");
+
+      endScanCallee =
+          (endFunction)dlsym(childLibrary, "kokkosp_end_parallel_scan");
+      endForCallee =
+          (endFunction)dlsym(childLibrary, "kokkosp_end_parallel_for");
+      endReduceCallee =
+          (endFunction)dlsym(childLibrary, "kokkosp_end_parallel_reduce");
+
+      initProfileLibrary =
+          (initFunction)dlsym(childLibrary, "kokkosp_init_library");
+      finalizeProfileLibrary =
+          (finalizeFunction)dlsym(childLibrary, "kokkosp_finalize_library");
+
+      if (NULL != initProfileLibrary) {
+        (*initProfileLibrary)(loadSeq + 1, interfaceVer, devInfoCount,
+                              deviceInfo);
+      }
+
+      if (tool_verbosity > 0) {
+        std::cout << "KokkosP: Function Status:\n";
+        std::cout << "KokkosP: begin-parallel-for:      "
+                  << ((beginForCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-scan:      "
+                  << ((beginScanCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: begin-parallel-reduce:      "
+                  << ((beginReduceCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-for:      "
+                  << ((endForCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-scan:      "
+                  << ((endScanCallee == NULL) ? "no" : "yes") << "\n";
+        std::cout << "KokkosP: end-parallel-reduce:      "
+                  << ((endReduceCallee == NULL) ? "no" : "yes") << "\n";
+      }
+    }
+  }
+
+
+  free(envBuffer);
   /* The following advanced functions of PAPI's high-level API are not part
    * of the official release. But they might be introduced in later PAPI
    * releases. PAPI_hl_init is now called from the first PAPI_hl_region_begin
