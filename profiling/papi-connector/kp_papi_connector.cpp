@@ -27,6 +27,12 @@
 
 #include "kp_papi_connector_domain.h"
 
+namespace KokkosTools {
+namespace Sampler {
+
+// a hash table mapping kID to nestedkID
+static std::unordered_map<uint64_t, uint64_t> infokID;
+
 typedef void (*initFunction)(const int, const uint64_t, const uint32_t, void*);
 typedef void (*finalizeFunction)();
 typedef void (*beginFunction)(const char*, const uint32_t, uint64_t*);
@@ -40,7 +46,6 @@ static beginFunction beginReduceCallee         = NULL;
 static endFunction endForCallee                = NULL;
 static endFunction endScanCallee               = NULL;
 static endFunction endReduceCallee             = NULL;
-
 
 
 extern "C" void kokkosp_init_library(const int loadSeq,
@@ -177,10 +182,10 @@ extern "C" void kokkosp_begin_parallel_for(const char* name, uint32_t devid,
       uint64_t nestedkID = 0;
       (*beginForCallee)(name, devID, &nestedkID);
       if (tool_verbosity > 0) {
-        std::cout << "KokkosP: sample " << *kID
+        std::cout << "KokkosP: PAPI child callee " << *kID
                   << " finished with child-begin function.\n";
       }
-      infokIDSample.insert({*kID, nestedkID});
+      infokID.insert({*kID, nestedkID});
     }
 }
 extern "C" void kokkosp_end_parallel_for(uint64_t kernid) {
@@ -191,15 +196,15 @@ extern "C" void kokkosp_end_parallel_for(uint64_t kernid) {
   } else {
     printf("Begin callback of parallel_for does not exist!\n");
   }
-  if(NULL!=endScanCallee)
+  if(NULL!=endForCallee)
   {
   (*endForCallee)(retrievedNestedkID);
   if (tool_verbosity > 0) {
-        std::cout << "KokkosP: sample " << kID
-                  << " finished with child-end function.\n";
+        std::cout << "KokkosP: papi child callee " << kID
+                  << " finished with its end function.\n";
      }
-    infokIDSample.erase(kID);
-  } 
+    infokID.erase(kID);
+  }
 }
 
 extern "C" void kokkosp_begin_parallel_reduce(const char* name, uint32_t devid,
@@ -306,3 +311,23 @@ extern "C" void kokkosp_stop_profile_section(uint32_t sec_id) {
     PAPI_hl_region_end(ss.str().c_str());
   }
 }
+}  // namespace Sampler
+}  // end namespace KokkosTools
+
+
+extern "C" {
+
+namespace impl = KokkosTools::Sampler;
+EXPOSE_TOOL_SETTINGS(impl::kokkosp_request_tool_settings)
+EXPOSE_PROVIDE_TOOL_PROGRAMMING_INTERFACE(
+    impl::kokkosp_provide_tool_programming_interface)
+EXPOSE_INIT(impl::kokkosp_init_library)
+EXPOSE_FINALIZE(impl::kokkosp_finalize_library)
+EXPOSE_BEGIN_PARALLEL_FOR(impl::kokkosp_begin_parallel_for)
+EXPOSE_END_PARALLEL_FOR(impl::kokkosp_end_parallel_for)
+EXPOSE_BEGIN_PARALLEL_SCAN(impl::kokkosp_begin_parallel_scan)
+EXPOSE_END_PARALLEL_SCAN(impl::kokkosp_end_parallel_scan)
+EXPOSE_BEGIN_PARALLEL_REDUCE(impl::kokkosp_begin_parallel_reduce)
+EXPOSE_END_PARALLEL_REDUCE(impl::kokkosp_end_parallel_reduce)
+
+}  // end extern "C"
