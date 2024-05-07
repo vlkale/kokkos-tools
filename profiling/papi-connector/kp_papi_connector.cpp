@@ -207,13 +207,13 @@ void kokkosp_end_parallel_for(uint64_t kernid) {
     PAPI_hl_region_end(parallel_for_name.top().c_str());
     parallel_for_name.pop();
   } else {
-    printf("Begin callback of parallel_for does not exist!\n");
+    printf("KokkosP: Begin PAPI callback of parallel_for does not exist!\n");
   }
   if(NULL!=endForCallee)
   {
   (*endForCallee)(retrievedNestedkID);
   if (tool_verbosity > 0) {
-        std::cout << "KokkosP: papi child callee " << kID
+        std::cout << "KokkosP: PAPI child callee " << kID
                   << " finished with its end function.\n";
      }
     infokID.erase(kID);
@@ -226,7 +226,16 @@ void kokkosp_begin_parallel_reduce(const char* name, uint32_t devid,
   std::stringstream ss;
   ss << "kokkosp_parallel_reduce:" << name;
   parallel_reduce_name.push(ss.str());
-  PAPI_hl_region_begin(ss.str().c_str());
+  PAPI_hl_region_begin(ss.str().c_str()); 
+       if (NULL != beginReduceCallee) {
+      uint64_t nestedkID = 0;
+      (*beginReduceCallee)(name, devID, &nestedkID);
+      if (tool_verbosity > 0) {
+        std::cout << "KokkosP: PAPI child callee " << *kID
+                  << " finished with child-begin function.\n";
+      }
+      infokID.insert({*kID, nestedkID});
+    }
 }
 void kokkosp_end_parallel_reduce(uint64_t kernid) {
   // printf("kokkosp_end_parallel_reduce: %d\n", kernid);
@@ -234,8 +243,19 @@ void kokkosp_end_parallel_reduce(uint64_t kernid) {
     PAPI_hl_region_end(parallel_reduce_name.top().c_str());
     parallel_reduce_name.pop();
   } else {
-    printf("Begin callback of parallel_reduce does not exist!\n");
+    printf("KokkosP: Begin PAPI callback of parallel_reduce does not exist!\n");
   }
+
+  if(NULL!=endReduceCallee)
+  {
+  (*endReduceCallee)(retrievedNestedkID);
+  if (tool_verbosity > 0) {
+        std::cout << "KokkosP: PAPI child callee " << kID
+                  << " finished with its end function.\n";
+     }
+    infokID.erase(kID);
+  }
+  
 }
 
  void kokkosp_begin_parallel_scan(const char* name, uint32_t devid,
@@ -245,6 +265,16 @@ void kokkosp_end_parallel_reduce(uint64_t kernid) {
   ss << "kokkosp_parallel_scan:" << name;
   parallel_scan_name.push(ss.str());
   PAPI_hl_region_begin(ss.str().c_str());
+
+          if (NULL != beginScanCallee) {
+      uint64_t nestedkID = 0;
+      (*beginScanCallee)(name, devID, &nestedkID);
+      if (tool_verbosity > 0) {
+        std::cout << "KokkosP: PAPI child callee " << *kID
+                  << " finished with child-begin function.\n";
+      }
+      infokID.insert({*kID, nestedkID});
+    }
 }
 void kokkosp_end_parallel_scan(uint64_t kernid) {
   // printf("kokkosp_end_parallel_scan: %d\n", kernid);
@@ -252,7 +282,17 @@ void kokkosp_end_parallel_scan(uint64_t kernid) {
     PAPI_hl_region_end(parallel_scan_name.top().c_str());
     parallel_scan_name.pop();
   } else {
-    printf("Begin callback of parallel_scan does not exist!\n");
+    printf("KokkosP: Begin PAPI callback of parallel_scan does not exist!\n");
+  }
+
+  if(NULL!=endScanCallee)
+   {
+   (*endScanCallee)(retrievedNestedkID);
+  if (tool_verbosity > 0) {
+        std::cout << "KokkosP: PAPI child callee " << kID
+                  << " finished with its end function.\n";
+     }
+    infokID.erase(kID);
   }
 }
 
