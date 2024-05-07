@@ -172,6 +172,16 @@ extern "C" void kokkosp_begin_parallel_for(const char* name, uint32_t devid,
   ss << "kokkosp_parallel_for:" << name;
   parallel_for_name.push(ss.str());
   PAPI_hl_region_begin(ss.str().c_str());
+
+      if (NULL != beginForCallee) {
+      uint64_t nestedkID = 0;
+      (*beginForCallee)(name, devID, &nestedkID);
+      if (tool_verbosity > 0) {
+        std::cout << "KokkosP: sample " << *kID
+                  << " finished with child-begin function.\n";
+      }
+      infokIDSample.insert({*kID, nestedkID});
+    }
 }
 extern "C" void kokkosp_end_parallel_for(uint64_t kernid) {
   // printf("kokkosp_end_parallel_for: %d\n", kernid);
@@ -181,6 +191,15 @@ extern "C" void kokkosp_end_parallel_for(uint64_t kernid) {
   } else {
     printf("Begin callback of parallel_for does not exist!\n");
   }
+  if(NULL!=endScanCallee)
+  {
+  (*endForCallee)(retrievedNestedkID);
+  if (tool_verbosity > 0) {
+        std::cout << "KokkosP: sample " << kID
+                  << " finished with child-end function.\n";
+     }
+    infokIDSample.erase(kID);
+  } 
 }
 
 extern "C" void kokkosp_begin_parallel_reduce(const char* name, uint32_t devid,
