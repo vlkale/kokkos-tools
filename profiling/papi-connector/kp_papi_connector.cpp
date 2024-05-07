@@ -80,8 +80,6 @@ void kokkosp_request_tool_settings(const uint32_t,
       exit(-1);
     }
   }
-
-
   
   char* envBuffer = (char*)malloc(sizeof(char) * (strlen(profileLibrary) + 1));
   strcpy(envBuffer, profileLibrary);
@@ -154,6 +152,10 @@ void kokkosp_request_tool_settings(const uint32_t,
     }
   }
 
+  const char* tool_global_fences = getenv("KOKKOS_TOOLS_GLOBALFENCES");
+  if (NULL != tool_global_fences) {
+    tool_globfences = (atoi(tool_global_fences) != 0);
+  }
 
   free(envBuffer);
   /* The following advanced functions of PAPI's high-level API are not part
