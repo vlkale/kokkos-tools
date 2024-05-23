@@ -1,3 +1,4 @@
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -7,19 +8,19 @@
 
 #include "Kokkos_Core.hpp"
 
+using ::testing::Contains;
 using ::testing::HasSubstr;
 using ::testing::Not;
 
 #include "parscan.hpp"
-#include "matchersSkip.hpp"
+#include "matchersProb.hpp"
 
 /**
  * @test This test checks that the tool effectively samples.
  *
-
  */
 
-TEST(SamplerSkipTest, parscan) {
+TEST(SamplerProbTest, parscan) {
   //! Initialize @c Kokkos.
   Kokkos::initialize();
 
@@ -46,16 +47,10 @@ TEST(SamplerSkipTest, parscan) {
 
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 1 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 2 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 3 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 4 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 5 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 7 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 8 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 9 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 10 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 11 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 13 calling")));
-  EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 14 calling")));
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: sample 15 calling")));
 
   int occurrences            = 0;
@@ -66,8 +61,7 @@ TEST(SamplerSkipTest, parscan) {
     ++occurrences;
     pos += target.length();
   }
-
-  EXPECT_EQ(occurrences, 2);
+  EXPECT_EQ(occurrences, 8);
 
   EXPECT_THAT(output.str(), Not(HasSubstr("KokkosP: FATAL: No child library of "
                                           "sampler utility library to call")));
