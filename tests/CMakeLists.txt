@@ -34,7 +34,7 @@ function(kp_add_executable_and_test)
     target_link_libraries(
         ${kaeat_args_TARGET_NAME}
         PRIVATE
-            kokkostools test_common
+            test_common
     )
 
     add_test(
