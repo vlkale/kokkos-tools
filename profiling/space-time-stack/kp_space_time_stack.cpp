@@ -521,14 +521,20 @@ struct Allocations {
   Allocations() : total_size(0) {}
   void allocate(std::string&& name, const void* ptr, std::uint64_t size,
                 StackNode* frame) {
-    if(ptr == nullptr) { assert(size==0); return; }
+    if (ptr == nullptr) {
+      assert(size == 0);
+      return;
+    }
     auto res = alloc_set.emplace(Allocation(std::move(name), ptr, size, frame));
     assert(res.second);
     total_size += size;
   }
   void deallocate(std::string&& name, const void* ptr, std::uint64_t size,
                   StackNode* frame) {
-    if(ptr == nullptr) { assert(size==0); return; }
+    if (ptr == nullptr) {
+      assert(size == 0);
+      return;
+    }
     auto key = Allocation(std::move(name), ptr, size, frame);
     auto it  = alloc_set.find(key);
     if (it == alloc_set.end()) {
