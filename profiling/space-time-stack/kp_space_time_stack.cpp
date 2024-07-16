@@ -913,9 +913,9 @@ Description:
 
 Example:
   The following example would set the threshold to 10%
-    <exe> [--kokkos-tools-args 10 ]
+    <exe> [--kokkos-tools-args=10 ]
 )usage";
-  std::cout << "usage: " << exe << "[--kokkos-tools-args <threshold>]\n"
+  std::cout << "usage: " << exe << "[--kokkos-tools-args=<threshold>]\n"
             << usage;
 }
 
