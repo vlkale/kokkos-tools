@@ -77,7 +77,11 @@ endif()
 # Libraries
 if(KokkosTools_ENABLE_PAPI)
   find_package(PAPI REQUIRED) # TODO: papi-connector requires v6.0 or newer
-  cmake_path(GET PAPI_INCLUDE_DIR PARENT_PATH PAPI_ROOT)
+  if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")
+    cmake_path(GET PAPI_INCLUDE_DIR PARENT_PATH PAPI_ROOT)
+  else()
+    get_filename_component(PAPI_ROOT ${PAPI_INCLUDE_DIR} DIRECTORY)
+  endif()
   message(STATUS "Found PAPI ${PAPI_VERSION_STRING} at ${PAPI_ROOT}")
   set(KokkosTools_HAS_PAPI ON)
 else()
