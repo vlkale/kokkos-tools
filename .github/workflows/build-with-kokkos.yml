@@ -13,7 +13,7 @@ jobs:
           - image: ubuntu:22.04
             preset: OpenMP
             compiler: default
-          - image: nvidia/cuda:11.0.3-base-ubuntu20.04
+          - image: nvidia/cuda:12.1.0-devel-ubuntu22.04
             preset: Cuda
             compiler: default
           - image: nvidia/cuda:12.2.0-devel-ubuntu22.04
