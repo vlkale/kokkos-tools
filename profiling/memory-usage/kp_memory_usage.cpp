@@ -34,6 +34,8 @@ char space_name[16][64];
 
 int num_spaces;
 std::vector<std::tuple<double, uint64_t, double> > space_size_track[16];
+std::vector<std::tuple<uint64_t, double> > space_size_total[16];
+
 uint64_t space_size[16];
 
 static std::mutex m;
@@ -83,10 +85,81 @@ void kokkosp_finalize_library() {
               1.0 * maxvalue / 1024 / 1024,
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
+
+
+for (unsigned int i = 0; i < spaces_total_xferred.size(); i++) {
+    fprintf(ofile, "# From Space: %s \t To Space: %s \t Total xferred: %.1lf \n", 
+      std::get<0>(spaces_total_xferred)[i]).first(), 
+      std::get<0>(spaces_total_xferred[i]).second(), 
+      std::get<1>(spaces_total_xferred[i]);
+
+    }
+    
     fclose(ofile);
   }
   free(hostname);
 }
+
+
+void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
+                             const void* dst_ptr, SpaceHandle src_handle,
+                             const char* src_name, const void* src_ptr,
+                             uint64_t size) {
+  auto dst_space = get_space(dst_handle);
+  auto src_space = get_space(src_handle);
+
+
+  // find  dst space , src space in the hash table 
+//   [dst_space][src_space][
+
+  // if exists, add to the total memory transferred 
+
+  // if doesn't exist, insert a new element and add to total mem transferred  
+
+    std::lock_guard<std::mutex> lock(m);
+
+  double time = timer.seconds();
+
+  int xferspace_i = num_xfer_spaces;
+  for (int s = 0; s < num_xfer_spaces; s++)
+    if (strcmp(xfer_space_name[s], xfer_space.name) == 0) space_i = s;
+
+  if (space_i == num_spaces) {
+    strncpy(space_name[num_spaces], space.name, 64);
+    num_spaces++;
+  }
+
+  // push xferspace Pair<char*, char*>(dst_name, src_name)
+  
+  // track deep copy on stack   
+}
+
+void kokkosp_end_deep_copy() {
+ std::lock_guard<std::mutex> lock(m);
+
+ //  double time = timer.seconds();
+  
+// pop the last xfer space 
+
+  uint64_t xferspace_curr_total =  spaces_total_xferred.find(Pair<char*, char*>(dst_name, src_name)).value() + size;
+  spaces_total_xferred.insert(Pair<char*, char*>(dst_name, src_name), xferspace_curr_total); 
+  
+  int space_i = num_spaces;
+  for (int s = 0; s < num_spaces; s++)
+    if (strcmp(xfer_space_name[s], xferspace.name) == 0) space_i = s;
+  
+  if (space_i == num_spaces) {
+    strncpy(space_name[num_spaces], space.name, 64);
+    num_spaces++;
+  }
+  if (space_size[space_i] >= size) {
+    space_size[space_i] -= size;
+    space_size_total[space_i].push_back(
+        std::make_tuple(time, space_size[space_i], max_mem_usage()));
+  }
+  
+}
+
 
 void kokkosp_allocate_data(const SpaceHandle space, const char* /*label*/,
                            const void* const /*ptr*/, const uint64_t size) {
@@ -128,6 +201,8 @@ void kokkosp_deallocate_data(const SpaceHandle space, const char* /*label*/,
   }
 }
 
+
+
 Kokkos::Tools::Experimental::EventSet get_event_set() {
   Kokkos::Tools::Experimental::EventSet my_event_set;
   memset(&my_event_set, 0,
@@ -136,6 +211,8 @@ Kokkos::Tools::Experimental::EventSet get_event_set() {
   my_event_set.finalize        = kokkosp_finalize_library;
   my_event_set.allocate_data   = kokkosp_allocate_data;
   my_event_set.deallocate_data = kokkosp_deallocate_data;
+  my_event_set.begin_deep_copy       = kokkosp_begin_deep_copy;
+  my_event_set.end_deep_copy         = kokkosp_end_deep_copy;
   return my_event_set;
 }
 
@@ -150,5 +227,8 @@ EXPOSE_INIT(impl::kokkosp_init_library)
 EXPOSE_FINALIZE(impl::kokkosp_finalize_library)
 EXPOSE_ALLOCATE(impl::kokkosp_allocate_data)
 EXPOSE_DEALLOCATE(impl::kokkosp_deallocate_data)
+
+EXPOSE_BEGIN_DEEP_COPY(impl::kokkosp_begin_deep_copy)
+EXPOSE_END_DEEP_COPY(impl::kokkosp_end_deep_copy)
 
 }  // extern "C"
