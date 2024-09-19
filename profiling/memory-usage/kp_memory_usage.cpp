@@ -52,19 +52,18 @@ void kokkosp_init_library(const int /*loadSeq*/,
                           const uint32_t /*devInfoCount*/,
                           Kokkos_Profiling_KokkosPDeviceInfo* /*deviceInfo*/) {
   num_spaces = 0;
-  for (int i = 0; i < 16; i++) { 
+  for (int i = 0; i < 16; i++) {
     space_size[i] = 0;
-    for (int j = 0; j < 16; j++) 
-     { 
+    for (int j = 0; j < 16; j++) {
       totalMemoryTransferred[i][j] = 0;
-     } 
+    }
   }
   timer.reset();
 }
 
 void kokkosp_finalize_library() {
   uint64_t totalMemorySpaceDataTransfer = 0;
-  char* hostname = (char*)malloc(sizeof(char) * 256);
+  char* hostname                        = (char*)malloc(sizeof(char) * 256);
   gethostname(hostname, 256);
   int pid = getpid();
 
@@ -90,17 +89,20 @@ void kokkosp_finalize_library() {
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
 
+    fprintf(ofile,
+            "--- Data transferred between Kokkos Memory Spaces (MB) --- \n");
+    for (unsigned int dst = 0; dst < num_spaces; dst++) {
+      for (unsigned int src = 0; src < num_spaces; src++) {
+        fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src],
+                1.0 * totalMemoryTransferred[dst][src] / 1024 / 1024);
+        totalMemorySpaceDataTransfer += totalMemoryTransferred[dst][src];
+      }
+    }
 
-    fprintf(ofile, "--- Data transferred between Kokkos Memory Spaces (MB) --- \n"); 
-   for (unsigned int dst = 0; dst < num_spaces; dst++) {
-        for (unsigned int src = 0; src < num_spaces; src++) {
-      fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src], 1.0 * totalMemoryTransferred[dst][src] / 1024 / 1024);
-      totalMemorySpaceDataTransfer += totalMemoryTransferred[dst][src]; 
-     }
-   }
-  
-   fprintf(ofile, "Total Memory Transferred across all Kokkos Memory Spaces: %llu \n", totalMemorySpaceDataTransfer);
-   fclose(ofile);
+    fprintf(ofile,
+            "Total Memory Transferred across all Kokkos Memory Spaces: %llu \n",
+            totalMemorySpaceDataTransfer);
+    fclose(ofile);
   }
   free(hostname);
 }
@@ -159,7 +161,7 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
     strncpy(space_name[num_spaces], dst_handle.name, 64);
     num_spaces++;
   }
-  
+
   int space_src = num_spaces;
   for (int s = 0; s < num_spaces; s++)
     if (strcmp(space_name[s], src_handle.name) == 0) space_src = s;
@@ -171,10 +173,7 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
   totalMemoryTransferred[space_dst][space_src] += size;
 }
 
-
-void kokkosp_end_deep_copy() {
-  std::lock_guard<std::mutex> lock(m);
-}
+void kokkosp_end_deep_copy() { std::lock_guard<std::mutex> lock(m); }
 
 Kokkos::Tools::Experimental::EventSet get_event_set() {
   Kokkos::Tools::Experimental::EventSet my_event_set;
