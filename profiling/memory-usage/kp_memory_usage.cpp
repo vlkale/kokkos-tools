@@ -62,8 +62,7 @@ void kokkosp_init_library(const int /*loadSeq*/,
 }
 
 void kokkosp_finalize_library() {
-  uint64_t totalMemorySpaceDataTransfer = 0;
-  char* hostname                        = (char*)malloc(sizeof(char) * 256);
+  char* hostname = (char*)malloc(sizeof(char) * 256);
   gethostname(hostname, 256);
   int pid = getpid();
 
@@ -95,13 +94,8 @@ void kokkosp_finalize_library() {
       for (unsigned int src = 0; src < num_spaces; src++) {
         fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src],
                 1.0 * totalMemoryTransferred[dst][src] / 1024 / 1024);
-        totalMemorySpaceDataTransfer += totalMemoryTransferred[dst][src];
       }
     }
-
-    fprintf(ofile,
-            "Total Memory Transferred across all Kokkos Memory Spaces (MB): %.1lf \n",
-            1.0 * totalMemorySpaceDataTransfer / 1024 / 1024);
 
     fclose(ofile);
   }
