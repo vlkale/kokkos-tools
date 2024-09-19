@@ -152,7 +152,6 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
     strncpy(space_name[num_spaces], dst_handle.name, 64);
     num_spaces++;
   }
-
   
   int space_src = num_spaces;
   for (int s = 0; s < num_spaces; s++)
