@@ -89,10 +89,10 @@ void kokkosp_finalize_library() {
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
 
-  fprintf(ofile, "--- Memory transferred between Kokkos Memory Spaces --- \n"); 
+  fprintf(ofile, "--- Data transferred between Kokkos Memory Spaces (MB) --- \n"); 
    for (unsigned int dst = 0; dst < num_spaces; dst++) {
         for (unsigned int src = 0; src < num_spaces; src++) {
-      fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src], totalMemoryTransferred[dst][src]);
+      fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src], 1.0*totalMemoryTransferred[dst][src]/ 1024 / 1024);
      }
    }
     fclose(ofile);
@@ -169,7 +169,6 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
 
 void kokkosp_end_deep_copy() {
   std::lock_guard<std::mutex> lock(m);
-  // TODO: pop the last xfer space
 }
 
 Kokkos::Tools::Experimental::EventSet get_event_set() {
