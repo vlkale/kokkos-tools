@@ -100,8 +100,9 @@ void kokkosp_finalize_library() {
     }
 
     fprintf(ofile,
-            "Total Memory Transferred across all Kokkos Memory Spaces: %llu \n",
-            totalMemorySpaceDataTransfer);
+            "Total Memory Transferred across all Kokkos Memory Spaces (MB): %.1lf \n",
+            1.0 * totalMemorySpaceDataTransfer / 1024 / 1024);
+
     fclose(ofile);
   }
   free(hostname);
