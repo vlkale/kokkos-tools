@@ -83,7 +83,7 @@ void kokkosp_finalize_library() {
               1.0 * maxvalue / 1024 / 1024,
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
-    fprintf(ofile, "\n \n Total Memory Transferred: %.1lf \t", totalMemoryTransferred);
+    fprintf(ofile, "\n \n Total Memory Transferred: %llu \t", totalMemoryTransferred);
     fclose(ofile);
   }
   free(hostname);
