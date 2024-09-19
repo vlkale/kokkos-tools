@@ -58,7 +58,7 @@ void kokkosp_init_library(const int /*loadSeq*/,
      { 
       totalMemoryTransferred[i][j] = 0;
      } 
-  } 
+  }
   timer.reset();
 }
 
@@ -88,10 +88,12 @@ void kokkosp_finalize_library() {
               1.0 * maxvalue / 1024 / 1024,
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
+
+  fprintf(ofile, "--- Memory transferred between Kokkos Memory Spaces --- \n"); 
    for (unsigned int dst = 0; dst < num_spaces; dst++) {
         for (unsigned int src = 0; src < num_spaces; src++) {
       fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src], totalMemoryTransferred[dst][src]);
-     } 
+     }
    }
     fclose(ofile);
   }
