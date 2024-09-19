@@ -96,6 +96,7 @@ void kokkosp_finalize_library() {
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
 
+    fprintf(ofile, "total Data transferred", totaldataTransferred); 
 
 for (unsigned int i = 0; i < spaces_total_xferred.size(); i++) {
     fprintf(ofile, "# From Space: %s \t To Space: %s \t Total transferred: %.1lf \n", 
@@ -118,7 +119,7 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
   auto dst_space = get_space(dst_handle);
   auto src_space = get_space(src_handle);
 
-
+   totalDataTransferred += size;
   // find  dst space, src space in the hash table  - this can be done by indexing a vector of spaces 
 //   [dst_space][src_space][
 
