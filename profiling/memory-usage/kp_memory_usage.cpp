@@ -35,7 +35,7 @@ char space_name[16][64];
 int num_spaces;
 std::vector<std::tuple<double, uint64_t, double> > space_size_track[16];
 uint64_t space_size[16];
-uint64_t totalMemoryTransferred;
+uint64_t totalMemoryTransferred[16][16];
 static std::mutex m;
 
 Kokkos::Timer timer;
@@ -52,8 +52,13 @@ void kokkosp_init_library(const int /*loadSeq*/,
                           const uint32_t /*devInfoCount*/,
                           Kokkos_Profiling_KokkosPDeviceInfo* /*deviceInfo*/) {
   num_spaces = 0;
-  for (int i = 0; i < 16; i++) space_size[i] = 0;
-  totalMemoryTransferred = 0;
+  for (int i = 0; i < 16; i++) { 
+    space_size[i] = 0;
+    for (int j = 0; j < 16; j++) 
+     { 
+      totalMemoryTransferred[i][j] = 0;
+     } 
+  } 
   timer.reset();
 }
 
@@ -83,7 +88,11 @@ void kokkosp_finalize_library() {
               1.0 * maxvalue / 1024 / 1024,
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
-    fprintf(ofile, "\n \n Total Memory Transferred: %.1lf \t", totalMemoryTransferred);
+   for (unsigned int dst = 0; dst < num_spaces; dst++) {
+        for (unsigned int src = 0; src < num_spaces; src++) {
+      fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src], totalMemoryTransferred[dst][src]);
+     } 
+   }
     fclose(ofile);
   }
   free(hostname);
@@ -134,7 +143,26 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
                              const char* src_name, const void* src_ptr,
                              uint64_t size) {
   std::lock_guard<std::mutex> lock(m);
-  totalMemoryTransferred += size;
+
+  int space_dst = num_spaces;
+  for (int s = 0; s < num_spaces; s++)
+    if (strcmp(space_name[s], dst_handle.name) == 0) space_dst = s;
+
+  if (space_dst == num_spaces) {
+    strncpy(space_name[num_spaces], dst_handle.name, 64);
+    num_spaces++;
+  }
+
+  
+  int space_src = num_spaces;
+  for (int s = 0; s < num_spaces; s++)
+    if (strcmp(space_name[s], src_handle.name) == 0) space_src = s;
+
+  if (space_src == num_spaces) {
+    strncpy(space_name[num_spaces], src_handle.name, 64);
+    num_spaces++;
+  }
+  totalMemoryTransferred[space_dst][space_src] += size;
 }
 
 
