@@ -142,10 +142,10 @@ void kokkosp_deallocate_data(const SpaceHandle space, const char* /*label*/,
   }
 }
 
-void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
-                             const void* dst_ptr, SpaceHandle src_handle,
-                             const char* src_name, const void* src_ptr,
-                             uint64_t size) {
+void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* /* dst_name */,
+                             const void* /* dst_ptr */, SpaceHandle src_handle,
+                             const char* /* src_name */,
+                             const void* /* src_ptr */, uint64_t size) {
   std::lock_guard<std::mutex> lock(m);
 
   int space_dst = num_spaces;
