@@ -35,7 +35,7 @@ char space_name[16][64];
 int num_spaces;
 std::vector<std::tuple<double, uint64_t, double> > space_size_track[16];
 uint64_t space_size[16];
-
+uint64_t totalMemoryTransferred;
 static std::mutex m;
 
 Kokkos::Timer timer;
@@ -53,7 +53,7 @@ void kokkosp_init_library(const int /*loadSeq*/,
                           Kokkos_Profiling_KokkosPDeviceInfo* /*deviceInfo*/) {
   num_spaces = 0;
   for (int i = 0; i < 16; i++) space_size[i] = 0;
-
+  totalMemoryTransferred = 0;
   timer.reset();
 }
 
@@ -83,6 +83,7 @@ void kokkosp_finalize_library() {
               1.0 * maxvalue / 1024 / 1024,
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
+    fprintf(ofile, "\n \n Total Memory Transferred: %.1lf \t", totalMemoryTransferred);
     fclose(ofile);
   }
   free(hostname);
@@ -128,6 +129,20 @@ void kokkosp_deallocate_data(const SpaceHandle space, const char* /*label*/,
   }
 }
 
+void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* dst_name,
+                             const void* dst_ptr, SpaceHandle src_handle,
+                             const char* src_name, const void* src_ptr,
+                             uint64_t size) {
+  std::lock_guard<std::mutex> lock(m);
+  totalMemoryTransferred += size;
+}
+
+
+void kokkosp_end_deep_copy() {
+  std::lock_guard<std::mutex> lock(m);
+  // TODO: pop the last xfer space
+}
+
 Kokkos::Tools::Experimental::EventSet get_event_set() {
   Kokkos::Tools::Experimental::EventSet my_event_set;
   memset(&my_event_set, 0,
@@ -136,6 +151,8 @@ Kokkos::Tools::Experimental::EventSet get_event_set() {
   my_event_set.finalize        = kokkosp_finalize_library;
   my_event_set.allocate_data   = kokkosp_allocate_data;
   my_event_set.deallocate_data = kokkosp_deallocate_data;
+  my_event_set.begin_deep_copy = kokkosp_begin_deep_copy;
+  my_event_set.end_deep_copy   = kokkosp_end_deep_copy;
   return my_event_set;
 }
 
@@ -150,5 +167,7 @@ EXPOSE_INIT(impl::kokkosp_init_library)
 EXPOSE_FINALIZE(impl::kokkosp_finalize_library)
 EXPOSE_ALLOCATE(impl::kokkosp_allocate_data)
 EXPOSE_DEALLOCATE(impl::kokkosp_deallocate_data)
+EXPOSE_BEGIN_DEEP_COPY(impl::kokkosp_begin_deep_copy)
+EXPOSE_END_DEEP_COPY(impl::kokkosp_end_deep_copy)
 
 }  // extern "C"
