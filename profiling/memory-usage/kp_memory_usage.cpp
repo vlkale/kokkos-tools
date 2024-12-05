@@ -67,12 +67,18 @@ void kokkosp_finalize_library() {
   int pid = getpid();
 
   for (int s = 0; s < num_spaces; s++) {
-    char* fileOutput = (char*)malloc(sizeof(char) * 256);
+
+    char* fileOutput = (char*)malloc(sizeof(char) * 256); 
+    char* fileOutputxfers = (char*)malloc(sizeof(char) * 256);
+
     snprintf(fileOutput, 256, "%s-%d-%s.memspace_usage", hostname, pid,
              space_name[s]);
-
+    
+    snprintf(fileOutputxfers, 256, "%s-%d.memspace_transfers", hostname, pid);
     FILE* ofile = fopen(fileOutput, "wb");
+    FILE* ofilexf = fopen(fileOutputxfers, "wb");
     free(fileOutput);
+    free(fileOutputxfers);
 
     fprintf(ofile, "# Space %s\n", space_name[s]);
     fprintf(ofile,
@@ -88,11 +94,11 @@ void kokkosp_finalize_library() {
               1.0 * std::get<2>(space_size_track[s][i]) / 1024 / 1024);
     }
 
-    fprintf(ofile, "# Data transferred between Kokkos Memory Spaces --- \n");
+    fprintf(ofilexf, "# Data transferred between Kokkos Memory Spaces --- \n");
     for (int dst = 0; dst < num_spaces; dst++) {
       for (int src = 0; src < num_spaces; src++) {
-        fprintf(ofile, "# DstSpace     SrcSpace    Data-Transferred(MB)\n");
-        fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src],
+        fprintf(ofilexf, "# DstSpace     SrcSpace    Data-Transferred(MB)\n");
+        fprintf(ofilexf, "%s %s %.1lf \n", space_name[dst], space_name[src],
                 1.0 * totalMemoryTransferred[dst][src] / 1024 / 1024);
       }
     }
@@ -168,7 +174,7 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* /* dst_name */,
   totalMemoryTransferred[space_dst][space_src] += size;
 }
 
-void kokkosp_end_deep_copy() { std::lock_guard<std::mutex> lock(m); }
+void kokkosp_end_deep_copy() { }
 
 Kokkos::Tools::Experimental::EventSet get_event_set() {
   Kokkos::Tools::Experimental::EventSet my_event_set;
