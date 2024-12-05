@@ -89,8 +89,8 @@ void kokkosp_finalize_library() {
     }
 
     fprintf(ofile, "# Data transferred between Kokkos Memory Spaces --- \n");
-    for (unsigned int dst = 0; dst < (unsigned int)num_spaces; dst++) {
-      for (unsigned int src = 0; src < (unsigned int)num_spaces; src++) {
+    for (int dst = 0; dst < num_spaces; dst++) {
+      for (int src = 0; src < num_spaces; src++) {
         fprintf(ofile, "# DstSpace     SrcSpace    Data-Transferred(MB)\n");
         fprintf(ofile, "%s %s %.1lf \n", space_name[dst], space_name[src],
                 1.0 * totalMemoryTransferred[dst][src] / 1024 / 1024);
