@@ -67,15 +67,14 @@ void kokkosp_finalize_library() {
   int pid = getpid();
 
   for (int s = 0; s < num_spaces; s++) {
-
-    char* fileOutput = (char*)malloc(sizeof(char) * 256); 
+    char* fileOutput      = (char*)malloc(sizeof(char) * 256);
     char* fileOutputxfers = (char*)malloc(sizeof(char) * 256);
 
     snprintf(fileOutput, 256, "%s-%d-%s.memspace_usage", hostname, pid,
              space_name[s]);
-    
+
     snprintf(fileOutputxfers, 256, "%s-%d.memspace_transfers", hostname, pid);
-    FILE* ofile = fopen(fileOutput, "wb");
+    FILE* ofile   = fopen(fileOutput, "wb");
     FILE* ofilexf = fopen(fileOutputxfers, "wb");
     free(fileOutput);
     free(fileOutputxfers);
@@ -174,7 +173,7 @@ void kokkosp_begin_deep_copy(SpaceHandle dst_handle, const char* /* dst_name */,
   totalMemoryTransferred[space_dst][space_src] += size;
 }
 
-void kokkosp_end_deep_copy() { }
+void kokkosp_end_deep_copy() {}
 
 Kokkos::Tools::Experimental::EventSet get_event_set() {
   Kokkos::Tools::Experimental::EventSet my_event_set;
