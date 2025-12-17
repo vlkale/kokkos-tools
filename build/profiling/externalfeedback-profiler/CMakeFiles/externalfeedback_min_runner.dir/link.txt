@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/cc -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=15.7 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/externalfeedback_min_runner.dir/demo_min_runner.c.o -o externalfeedback_min_runner 

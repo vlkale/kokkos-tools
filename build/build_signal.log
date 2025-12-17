@@ -1,0 +1,17 @@
+[ 20%] Building CXX object profiling/externalfeedback-profiler/CMakeFiles/kp_externalfeedback_profiler.dir/kp_externalfeedback_profiler.cpp.o
+[ 40%] Building CXX object profiling/externalfeedback-profiler/CMakeFiles/kp_externalfeedback_profiler.dir/externalfeedback.cpp.o
+/Users/vlkale/Desktop/vlap/wk/code/softwareTech/kto-dv-fdbk-vk/profiling/externalfeedback-profiler/kp_externalfeedback_profiler.cpp:17:10: fatal error: 'cstdlib' file not found
+   17 | #include <cstdlib>
+      |          ^~~~~~~~~
+In file included from /Users/vlkale/Desktop/vlap/wk/code/softwareTech/kto-dv-fdbk-vk/profiling/externalfeedback-profiler/externalfeedback.cpp:17:
+/Users/vlkale/Desktop/vlap/wk/code/softwareTech/kto-dv-fdbk-vk/profiling/externalfeedback-profiler/externalfeedback.hpp:20:10: fatal error: 'functional' file not found
+   20 | #include <functional>
+      |          ^~~~~~~~~~~~
+1 error generated.
+1 error generated.
+make[3]: *** [profiling/externalfeedback-profiler/CMakeFiles/kp_externalfeedback_profiler.dir/externalfeedback.cpp.o] Error 1
+make[3]: *** Waiting for unfinished jobs....
+make[3]: *** [profiling/externalfeedback-profiler/CMakeFiles/kp_externalfeedback_profiler.dir/kp_externalfeedback_profiler.cpp.o] Error 1
+make[2]: *** [profiling/externalfeedback-profiler/CMakeFiles/kp_externalfeedback_profiler.dir/all] Error 2
+make[1]: *** [profiling/externalfeedback-profiler/CMakeFiles/externalfeedback_demo_runner_signal.dir/rule] Error 2
+make: *** [externalfeedback_demo_runner_signal] Error 2

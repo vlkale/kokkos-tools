@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++ -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=15.7 -dynamiclib -Wl,-headerpad_max_install_names -o libkp_kernel_logger.dylib -install_name @rpath/libkp_kernel_logger.dylib CMakeFiles/kp_kernel_logger.dir/kp_kernel_logger.cpp.o 

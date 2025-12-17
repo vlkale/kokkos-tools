@@ -1,0 +1,3 @@
+[ 50%] Building C object profiling/externalfeedback-profiler/CMakeFiles/externalfeedback_min_runner.dir/demo_min_runner.c.o
+[100%] Linking C executable externalfeedback_min_runner
+[100%] Built target externalfeedback_min_runner

@@ -131,6 +131,50 @@ endif()
 
 if(APPLE)
   message(STATUS "Apple OSX target detected.")
+  # Diagnostics for SDK and toolchain
+  message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
+  message(STATUS "CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+  if(DEFINED CMAKE_OSX_SYSROOT)
+    message(STATUS "CMAKE_OSX_SYSROOT: ${CMAKE_OSX_SYSROOT}")
+  else()
+    # Proactively set CMAKE_OSX_SYSROOT from xcrun if available
+    find_program(XCRUN_EXECUTABLE xcrun)
+    if(XCRUN_EXECUTABLE)
+      execute_process(
+        COMMAND ${XCRUN_EXECUTABLE} --show-sdk-path
+        OUTPUT_VARIABLE XCRUN_SDK_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET)
+      if(XCRUN_SDK_PATH AND EXISTS ${XCRUN_SDK_PATH})
+        set(CMAKE_OSX_SYSROOT ${XCRUN_SDK_PATH} CACHE PATH "macOS SDK root" FORCE)
+        message(STATUS "CMAKE_OSX_SYSROOT was unset; set to: ${CMAKE_OSX_SYSROOT}")
+      else()
+        message(WARNING "CMAKE_OSX_SYSROOT is not set and xcrun did not return a valid SDK path. If you see missing system headers (e.g., <chrono>, <atomic>), ensure Xcode Command Line Tools are installed and selected. You can configure with: -DCMAKE_OSX_SYSROOT=$(xcrun --show-sdk-path)")
+      endif()
+    else()
+      message(WARNING "xcrun not found. Install Xcode Command Line Tools: xcode-select --install")
+    endif()
+  endif()
+  # Optional: probe SDK path via xcrun for user guidance
+  find_program(XCRUN_EXECUTABLE xcrun)
+  if(XCRUN_EXECUTABLE)
+    execute_process(COMMAND ${XCRUN_EXECUTABLE} --show-sdk-path
+      OUTPUT_VARIABLE XCRUN_SDK_PATH OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_QUIET)
+    if(XCRUN_SDK_PATH)
+      message(STATUS "xcrun --show-sdk-path: ${XCRUN_SDK_PATH}")
+    endif()
+  else()
+    message(WARNING "xcrun not found. Install Xcode Command Line Tools: xcode-select --install")
+  endif()
+endif()
+
+# Proactive standard library header check to catch missing libc++/SDK
+include(CheckCXXSourceCompiles)
+set(_std_headers_test "#include <vector>\nint main(){ std::vector<int> v; v.push_back(1); return 0; }\n")
+check_cxx_source_compiles("${_std_headers_test}" HAVE_STD_HEADERS)
+if(NOT HAVE_STD_HEADERS)
+  message(WARNING "C++ standard headers may be incomplete or not visible (libc++).\nDetected compiler: ${CMAKE_CXX_COMPILER}.\nThe build may fail if headers like <chrono> are needed.\nOn macOS, ensure CLT/Xcode SDK is installed and selected. Try: -DCMAKE_OSX_SYSROOT=$(xcrun --show-sdk-path) or xcode-select --install.")
 endif()
 
 # Utilities
@@ -154,6 +198,8 @@ if(NOT WIN32)
   add_subdirectory(profiling/chrome-tracing)
   add_subdirectory(profiling/space-time-stack)
   add_subdirectory(profiling/perfetto-connector)
+  # Minimal external feedback demo (Hello->hash->World)
+  add_subdirectory(profiling/externalfeedback-profiler)
 endif()
 
 # External lib connectors
